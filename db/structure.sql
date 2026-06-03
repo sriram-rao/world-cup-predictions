@@ -51,7 +51,11 @@ CREATE TABLE public.fixtures (
     location text NOT NULL,
     home_team text NOT NULL,
     away_team text NOT NULL,
-    group_name text
+    group_name text,
+    home_score integer,
+    away_score integer,
+    CONSTRAINT fixtures_away_score_non_negative CHECK ((away_score >= 0)),
+    CONSTRAINT fixtures_home_score_non_negative CHECK ((home_score >= 0))
 );
 
 
@@ -121,7 +125,8 @@ CREATE TABLE public.users (
     username character varying NOT NULL,
     password_digest character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    admin boolean DEFAULT false NOT NULL
 );
 
 
@@ -239,6 +244,7 @@ ALTER TABLE ONLY public.predictions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260603224400'),
 ('20260603200526'),
 ('20260603195901'),
 ('20260603195900'),

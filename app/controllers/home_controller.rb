@@ -17,6 +17,11 @@ class HomeController < ApplicationController
       @previous_date = @fixture_date - 1.day
       @next_date = @fixture_date + 1.day
       @fixtures = Fixture.where(match_date: @fixture_date.all_day).order(:match_date)
+      @predictions_by_fixture_id = if authenticated?
+        Current.user.predictions.where(fixture: @fixtures).index_by(&:fixture_id)
+      else
+        {}
+      end
     rescue Date::Error
       redirect_to root_path
     end

@@ -8,5 +8,7 @@ create table public.fixtures (
   location text not null,
   home_team text not null,
   away_team text not null,
-  group_name text
+  group_name text,
+  home_score integer check (home_score >= 0),
+  away_score integer check (away_score >= 0)
 );

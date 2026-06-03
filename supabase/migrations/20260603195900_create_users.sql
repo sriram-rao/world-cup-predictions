@@ -2,6 +2,7 @@ create table public.users (
   id uuid primary key default gen_random_uuid(),
   username text not null unique,
   password_digest text not null,
+  admin boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
