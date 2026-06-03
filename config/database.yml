@@ -87,9 +87,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: world_cup_predictions_production
-    username: world_cup_predictions
-    password: <%= ENV["WORLD_CUP_PREDICTIONS_DATABASE_PASSWORD"] %>
+    url: <%= ENV["DATABASE_URL"] %>
   cache:
     <<: *primary_production
     database: world_cup_predictions_production_cache
