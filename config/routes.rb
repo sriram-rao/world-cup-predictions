@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   end
 
   resource :leaderboard, only: :show
+  resources :users, only: [] do
+    resource :password, only: %i[edit update], module: :users
+  end
   resource :scoring_rules, path: "rules", only: %i[show update]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

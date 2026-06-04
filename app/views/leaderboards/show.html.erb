@@ -3,7 +3,7 @@
     <div>
       <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
       <h1 class="mt-2 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">Leaderboard</h1>
-      <p class="mt-4 text-base text-slate-600 sm:text-lg"><%= @rule.outcome_points %> outcome · <%= @rule.goal_difference_points %> goal difference · <%= @rule.exact_score_points %> exact score</p>
+      <p class="mt-4 text-base text-slate-600 sm:text-lg"><%= @rule.outcome_points %> pt for outcome · <%= @rule.goal_difference_points %> pt for goal difference · <%= @rule.exact_score_points %> pt for exact score</p>
     </div>
 
     <div class="flex gap-2">
@@ -28,7 +28,12 @@
         <% @rows.each_with_index do |row, index| %>
           <li class="grid grid-cols-[4rem_minmax(0,1fr)_5rem] items-center gap-3 border-b border-slate-100 px-4 py-4 last:border-b-0 sm:grid-cols-[5rem_minmax(0,1fr)_6rem_6rem_6rem_6rem_6rem] sm:px-6">
             <span class="text-sm font-black text-slate-400">#<%= index + 1 %></span>
-            <span class="min-w-0 truncate text-lg font-black text-slate-950"><%= row[:user].username %></span>
+            <span class="min-w-0 truncate text-lg font-black text-slate-950">
+              <%= row[:user].username %>
+              <% if authenticated? && Current.user.admin? && Current.user != row[:user] %>
+                <%= link_to "Reset password", edit_user_password_path(row[:user]), class: "ml-2 text-xs font-bold text-slate-400 hover:text-red-600" %>
+              <% end %>
+            </span>
             <span class="text-right text-xl font-black text-slate-950"><%= row[:points] %></span>
             <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:correct_outcomes] %></span>
             <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:correct_goal_differences] %></span>
