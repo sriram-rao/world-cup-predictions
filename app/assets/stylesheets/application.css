@@ -94,6 +94,17 @@ button {
   color: #bfdbfe !important;
 }
 
+.result-save-button {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  border: 1px solid #047857 !important;
+}
+
+.result-save-button:hover {
+  background-color: #047857 !important;
+  color: #ffffff !important;
+}
+
 .theme-toggle {
   position: fixed;
   right: 1rem;
