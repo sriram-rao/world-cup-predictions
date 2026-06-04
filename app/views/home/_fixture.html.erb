@@ -18,7 +18,7 @@
 
     <div class="flex min-w-0 items-center gap-3">
       <p class="min-w-0 truncate text-right text-sm text-slate-500">
-        <%= venue(fixture.location) %><% if fixture.group_name.present? %> · <%= fixture.group_name %><% end %>
+        <%= venue(fixture.location) %><% if fixture_stage(fixture).present? %> · <%= fixture_stage(fixture) %><% end %>
       </p>
       <%= link_to "Predictions →", fixture_path(fixture), class: "shrink-0 text-sm font-bold text-blue-700 transition hover:text-blue-800" %>
     </div>

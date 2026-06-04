@@ -54,8 +54,4 @@ module FlagHelper
     flag = FLAGS[name]
     flag ? "#{flag} #{name}" : name
   end
-
-  def venue(location)
-    location.gsub(/\s*stadium\s*/i, "").strip
-  end
 end
