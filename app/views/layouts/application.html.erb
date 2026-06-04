@@ -33,28 +33,21 @@
   <body class="bg-slate-50 text-slate-900 antialiased">
     <%= yield %>
 
-    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle color theme">
-      <span data-theme-toggle-icon>☀️</span>
-      <span data-theme-toggle-label>Light</span>
-    </button>
-
     <script>
       (() => {
-        const button = document.querySelector("[data-theme-toggle]");
-        const icon = document.querySelector("[data-theme-toggle-icon]");
-        const label = document.querySelector("[data-theme-toggle-label]");
-
         const sync = () => {
           const dark = document.documentElement.dataset.theme !== "light";
-          icon.textContent = dark ? "☀️" : "🌙";
-          label.textContent = dark ? "Light" : "Dark";
+          document.querySelectorAll("[data-theme-toggle-icon]").forEach((icon) => icon.textContent = dark ? "☀️" : "🌙");
+          document.querySelectorAll("[data-theme-toggle-label]").forEach((label) => label.textContent = dark ? "Light mode" : "Dark mode");
         };
 
-        button.addEventListener("click", () => {
-          const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-          document.documentElement.dataset.theme = next;
-          localStorage.setItem("theme", next);
-          sync();
+        document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+            document.documentElement.dataset.theme = next;
+            localStorage.setItem("theme", next);
+            sync();
+          });
         });
 
         sync();
@@ -64,6 +57,8 @@
         document.querySelectorAll("details[data-click-outside-close][open]").forEach((details) => {
           if (!details.contains(event.target)) details.removeAttribute("open");
         });
+
+        if (event.target instanceof HTMLDialogElement) event.target.close();
       });
     </script>
   </body>
