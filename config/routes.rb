@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resource :session
   resource :registration, only: %i[new create]
+  resource :admin_mode, only: :update
 
   resources :fixtures, only: :show do
     resource :prediction, only: %i[create update]

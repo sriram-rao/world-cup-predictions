@@ -1,6 +1,6 @@
 <% prediction = predictions_by_fixture_id[fixture.id] || Prediction.new(fixture: fixture) %>
 <% signed_in = authenticated? %>
-<% admin = Current.user&.admin? %>
+<% admin = admin_mode? %>
 <% open = signed_in && !fixture.locked? %>
 <% row = "mt-3 grid gap-3 sm:grid-cols-[minmax(0,1fr)_8rem] sm:items-center" %>
 <% scoreline = "grid grid-cols-[minmax(0,1fr)_3rem_1rem_3rem_minmax(0,1fr)] items-center gap-2 sm:grid-cols-[minmax(0,1fr)_4rem_1rem_4rem_minmax(0,1fr)] sm:gap-3" %>

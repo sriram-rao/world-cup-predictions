@@ -20,7 +20,7 @@ class ScoringRulesController < ApplicationController
     end
 
     def require_admin
-      redirect_to scoring_rules_path, alert: "Admins only." unless Current.user&.admin?
+      redirect_to scoring_rules_path, alert: "Admins only." unless admin_mode?
     end
 
     def rule_params

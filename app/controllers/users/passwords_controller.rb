@@ -23,7 +23,7 @@ module Users
 
     private
       def require_admin
-        redirect_to root_path, alert: "Admins only." unless Current.user&.admin?
+        redirect_to root_path, alert: "Admins only." unless admin_mode?
       end
 
       def set_user
