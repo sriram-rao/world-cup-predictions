@@ -49,12 +49,24 @@
   border-color: #334155 !important;
 }
 
-:root[data-theme="dark"] input,
+:root[data-theme="dark"] input:not([type="submit"]),
 :root[data-theme="dark"] select,
 :root[data-theme="dark"] option {
   background-color: #020617 !important;
   color: #e2e8f0 !important;
   border-color: #475569 !important;
+}
+
+input[type="submit"],
+button {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+:root[data-theme="dark"] input[type="submit"].bg-slate-950,
+:root[data-theme="dark"] button.bg-slate-950 {
+  background-color: #f8fafc !important;
+  color: #020617 !important;
 }
 
 :root[data-theme="dark"] .shadow-sm,
