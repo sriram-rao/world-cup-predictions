@@ -59,6 +59,12 @@
 
         sync();
       })();
+
+      document.addEventListener("click", (event) => {
+        document.querySelectorAll("details[data-click-outside-close][open]").forEach((details) => {
+          if (!details.contains(event.target)) details.removeAttribute("open");
+        });
+      });
     </script>
   </body>
 </html>
