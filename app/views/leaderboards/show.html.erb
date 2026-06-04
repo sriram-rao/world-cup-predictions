@@ -1,0 +1,47 @@
+<main class="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
+  <header class="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
+      <h1 class="mt-2 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">Leaderboard</h1>
+      <p class="mt-4 text-base text-slate-600 sm:text-lg"><%= @rule.outcome_points %> outcome · <%= @rule.goal_difference_points %> goal difference · <%= @rule.exact_score_points %> exact score</p>
+    </div>
+
+    <div class="flex gap-2">
+      <%= link_to "Rules", scoring_rules_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+      <%= link_to "Fixtures", root_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+    </div>
+  </header>
+
+  <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70">
+    <% if @rows.any? %>
+      <div class="grid grid-cols-[4rem_minmax(0,1fr)_5rem] gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 text-xs font-black uppercase tracking-wide text-slate-500 sm:grid-cols-[5rem_minmax(0,1fr)_6rem_6rem_6rem_6rem_6rem] sm:px-6">
+        <span>Rank</span>
+        <span>User</span>
+        <span class="text-right">Points</span>
+        <span class="hidden text-right sm:block">Outcome</span>
+        <span class="hidden text-right sm:block">GD</span>
+        <span class="hidden text-right sm:block">Exact</span>
+        <span class="hidden text-right sm:block">Picks</span>
+      </div>
+
+      <ol>
+        <% @rows.each_with_index do |row, index| %>
+          <li class="grid grid-cols-[4rem_minmax(0,1fr)_5rem] items-center gap-3 border-b border-slate-100 px-4 py-4 last:border-b-0 sm:grid-cols-[5rem_minmax(0,1fr)_6rem_6rem_6rem_6rem_6rem] sm:px-6">
+            <span class="text-sm font-black text-slate-400">#<%= index + 1 %></span>
+            <span class="min-w-0 truncate text-lg font-black text-slate-950"><%= row[:user].username %></span>
+            <span class="text-right text-xl font-black text-slate-950"><%= row[:points] %></span>
+            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:correct_outcomes] %></span>
+            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:correct_goal_differences] %></span>
+            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:exact_scores] %></span>
+            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:predictions] %></span>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <div class="p-6 sm:p-8">
+        <h2 class="text-2xl font-black text-slate-950">No scores yet</h2>
+        <p class="mt-2 text-slate-600">Leaderboard starts after results are entered.</p>
+      </div>
+    <% end %>
+  </section>
+</main>

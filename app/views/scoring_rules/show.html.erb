@@ -1,0 +1,59 @@
+<main class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
+  <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
+      <h1 class="mt-2 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl">Rules</h1>
+      <p class="mt-4 text-base text-slate-600 sm:text-lg">Points stack together for each match.</p>
+    </div>
+
+    <%= link_to "Leaderboard", leaderboard_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+  </header>
+
+  <% if flash[:notice].present? %>
+    <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"><%= flash[:notice] %></div>
+  <% end %>
+
+  <% if flash[:alert].present? %>
+    <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700"><%= flash[:alert] %></div>
+  <% end %>
+
+  <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 sm:p-8">
+    <% if authenticated? && Current.user.admin? %>
+      <%= form_with model: @rule, url: scoring_rules_path, method: :patch, class: "space-y-4" do |form| %>
+        <div class="hidden text-xs font-black uppercase tracking-wide text-slate-500 sm:grid sm:grid-cols-[minmax(0,1fr)_6rem]">
+          <span>Rule</span>
+          <span class="text-center">Points</span>
+        </div>
+
+        <% [["Correct outcome", :outcome_points], ["Correct signed goal difference", :goal_difference_points], ["Exact score", :exact_score_points]].each do |label, field| %>
+          <label class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_6rem] sm:items-center">
+            <span class="font-bold text-slate-700"><%= label %></span>
+            <%= form.number_field field, min: 0, class: "w-24 rounded-xl border border-slate-300 bg-white px-3 py-2 text-center text-lg font-black text-slate-950 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
+          </label>
+        <% end %>
+
+        <%= form.submit "Save rules", class: "cursor-pointer rounded-xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800" %>
+      <% end %>
+    <% else %>
+      <div class="mb-3 grid grid-cols-[minmax(0,1fr)_5rem] text-xs font-black uppercase tracking-wide text-slate-500">
+        <span>Rule</span>
+        <span class="text-right">Points</span>
+      </div>
+
+      <dl class="space-y-4">
+        <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <dt class="font-bold text-slate-700">Correct outcome</dt>
+          <dd class="text-2xl font-black text-slate-950"><%= @rule.outcome_points %></dd>
+        </div>
+        <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <dt class="font-bold text-slate-700">Correct signed goal difference</dt>
+          <dd class="text-2xl font-black text-slate-950"><%= @rule.goal_difference_points %></dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="font-bold text-slate-700">Exact score</dt>
+          <dd class="text-2xl font-black text-slate-950"><%= @rule.exact_score_points %></dd>
+        </div>
+      </dl>
+    <% end %>
+  </section>
+</main>

@@ -3,6 +3,8 @@ require "csv"
 fixtures_path = Rails.root.join("db/data/fixtures.csv")
 pacific_time = ActiveSupport::TimeZone["Pacific Time (US & Canada)"]
 
+ScoringRule.current
+
 fixtures_imported = 0
 
 CSV.foreach(fixtures_path, headers: true) do |row|

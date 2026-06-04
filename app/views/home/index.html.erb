@@ -2,29 +2,58 @@
   <header class="mb-8 sm:mb-10">
     <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
     <div class="mt-2 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-      <div>
-        <h1 class="text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-          <%= @fixture_date == Time.zone.today ? "Today's fixtures" : "Fixtures" %>
-        </h1>
+      <div class="min-w-0 flex-1">
+        <div class="flex items-start justify-between gap-4">
+          <h1 class="text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+            <%= @fixture_date == Time.zone.today ? "Today's fixtures" : "Fixtures" %>
+          </h1>
+
+          <details class="relative shrink-0 sm:hidden">
+            <summary class="list-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 shadow-sm marker:hidden">
+              ☰
+            </summary>
+
+            <div class="absolute right-0 z-10 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-700 shadow-xl">
+              <% if authenticated? %>
+                <div class="border-b border-slate-100 px-4 py-3 text-slate-500">Hi <%= Current.user.username %></div>
+                <%= button_to "Sign out", session_path, method: :delete, class: "w-full px-4 py-3 text-left font-bold transition hover:bg-slate-50" %>
+              <% else %>
+                <%= link_to "Sign in", new_session_path, class: "block border-b border-slate-100 px-4 py-3 transition hover:bg-slate-50" %>
+                <%= link_to "Sign up", new_registration_path, class: "block border-b border-slate-100 px-4 py-3 transition hover:bg-slate-50" %>
+              <% end %>
+              <%= link_to "Leaderboard", leaderboard_path, class: "block border-t border-slate-100 px-4 py-3 transition hover:bg-slate-50" %>
+              <%= link_to "Rules", scoring_rules_path, class: "block border-t border-slate-100 px-4 py-3 transition hover:bg-slate-50" %>
+            </div>
+          </details>
+        </div>
+
         <p class="mt-4 text-base text-slate-600 sm:text-lg"><%= @fixture_date.strftime("%A, %B %-d, %Y") %> Pacific Time</p>
       </div>
 
       <div class="flex flex-col gap-3 sm:items-end">
-        <% if authenticated? %>
-          <div class="flex items-center gap-4 text-sm">
-            <span class="font-bold text-slate-700">Hi <%= Current.user.username %></span>
-            <%= button_to "Sign out", session_path, method: :delete, class: "font-bold text-slate-500 transition hover:text-slate-950" %>
-          </div>
-        <% else %>
-          <div class="flex gap-4 text-sm font-bold">
-            <%= link_to "Sign in", new_session_path, class: "text-blue-700 transition hover:text-blue-800" %>
-            <%= link_to "Sign up", new_registration_path, class: "text-slate-600 transition hover:text-slate-950" %>
-          </div>
-        <% end %>
+        <div class="hidden flex-col gap-3 sm:flex sm:items-end">
+          <% if authenticated? %>
+            <div class="flex items-center gap-4 text-sm">
+              <span class="font-bold text-slate-700">Hi <%= Current.user.username %></span>
+              <%= button_to "Sign out", session_path, method: :delete, class: "font-bold text-slate-500 transition hover:text-slate-950" %>
+            </div>
+          <% else %>
+            <div class="flex gap-4 text-sm font-bold">
+              <%= link_to "Sign in", new_session_path, class: "text-blue-700 transition hover:text-blue-800" %>
+              <%= link_to "Sign up", new_registration_path, class: "text-slate-600 transition hover:text-slate-950" %>
+            </div>
+          <% end %>
 
-        <nav class="grid grid-cols-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:w-64" aria-label="Fixture date navigation">
-          <%= link_to "← Previous", root_path(date: @previous_date.iso8601), class: "border-r border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" %>
-          <%= link_to "Next →", root_path(date: @next_date.iso8601), class: "px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" %>
+          <div class="grid w-64 grid-cols-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <%= link_to "Leaderboard", leaderboard_path, class: "border-r border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" %>
+            <%= link_to "Rules", scoring_rules_path, class: "px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" %>
+          </div>
+        </div>
+
+        <nav class="grid w-full grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:w-64" aria-label="Fixture date navigation">
+          <%= link_to "←", root_path(date: @previous_date.iso8601), class: "border-r border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" %>
+          <%= link_to "Today", root_path, class: "border-r border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" %>
+          <%= link_to "→", root_path(date: @next_date.iso8601), class: "px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" %>
         </nav>
       </div>
     </div>
@@ -40,78 +69,7 @@
 
   <% if @fixtures.any? %>
     <section class="grid gap-4" aria-label="Fixtures">
-      <% @fixtures.each do |fixture| %>
-        <% prediction = @predictions_by_fixture_id[fixture.id] || Prediction.new(fixture: fixture) %>
-
-        <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70 sm:rounded-3xl sm:p-6 lg:p-7">
-          <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div class="min-w-0 flex-1">
-              <time class="text-sm font-extrabold text-blue-700 sm:text-base" datetime="<%= fixture.match_date.iso8601 %>">
-                <%= fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%-I:%M %p") %>
-              </time>
-
-              <div class="mt-3 grid gap-1 text-2xl font-black leading-tight text-slate-950 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-baseline sm:gap-4 sm:text-3xl lg:text-4xl">
-                <span class="sm:text-right"><%= fixture.home_team %></span>
-                <span class="text-sm font-black uppercase tracking-wide text-slate-400 sm:text-xl sm:normal-case sm:tracking-normal">vs</span>
-                <span><%= fixture.away_team %></span>
-              </div>
-
-              <p class="mt-4 text-sm leading-6 text-slate-500 sm:text-base">
-                Match <%= fixture.match_number %>
-                · <%= fixture.location %>
-                <% if fixture.group_name.present? %>
-                  · <%= fixture.group_name %>
-                <% end %>
-              </p>
-
-              <% if fixture.result? %>
-                <p class="mt-4 inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-black text-slate-800">
-                  Final: <%= fixture.home_score %>–<%= fixture.away_score %>
-                </p>
-              <% end %>
-            </div>
-
-            <div class="w-full rounded-2xl bg-slate-50 p-4 lg:w-72">
-              <% if authenticated? %>
-                <% if fixture.locked? %>
-                  <p class="text-sm font-bold text-slate-700">Prediction locked</p>
-                  <% if prediction.persisted? %>
-                    <p class="mt-2 text-2xl font-black text-slate-950"><%= prediction.home_score %>–<%= prediction.away_score %></p>
-                  <% else %>
-                    <p class="mt-2 text-sm text-slate-500">No prediction entered.</p>
-                  <% end %>
-                <% else %>
-                  <%= form_with model: prediction, url: fixture_prediction_path(fixture), class: "space-y-3" do |form| %>
-                    <p class="text-sm font-bold text-slate-700">Your prediction</p>
-                    <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                      <%= form.number_field :home_score, min: 0, required: true, class: "w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-center text-lg font-black outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
-                      <span class="text-sm font-black text-slate-400">–</span>
-                      <%= form.number_field :away_score, min: 0, required: true, class: "w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-center text-lg font-black outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
-                    </div>
-                    <%= form.submit prediction.persisted? ? "Update" : "Save", class: "w-full cursor-pointer rounded-xl bg-slate-950 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-800" %>
-                  <% end %>
-                <% end %>
-
-                <% if Current.user.admin? %>
-                  <div class="mt-4 border-t border-slate-200 pt-4">
-                    <%= form_with model: fixture, url: fixture_result_path(fixture), method: :patch, class: "space-y-3" do |form| %>
-                      <p class="text-sm font-bold text-slate-700">Actual result</p>
-                      <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                        <%= form.number_field :home_score, min: 0, class: "w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-center text-lg font-black outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
-                        <span class="text-sm font-black text-slate-400">–</span>
-                        <%= form.number_field :away_score, min: 0, class: "w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-center text-lg font-black outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
-                      </div>
-                      <%= form.submit "Save result", class: "w-full cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-slate-100" %>
-                    <% end %>
-                  </div>
-                <% end %>
-              <% else %>
-                <%= link_to "Sign in to predict", new_session_path, class: "block rounded-xl bg-slate-950 px-4 py-3 text-center text-sm font-black text-white transition hover:bg-slate-800" %>
-              <% end %>
-            </div>
-          </div>
-        </article>
-      <% end %>
+      <%= render partial: "fixture", collection: @fixtures, locals: { predictions_by_fixture_id: @predictions_by_fixture_id } %>
     </section>
   <% else %>
     <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 sm:rounded-3xl sm:p-8">

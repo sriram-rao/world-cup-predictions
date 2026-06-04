@@ -84,6 +84,23 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: scoring_rules; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.scoring_rules (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    outcome_points integer DEFAULT 1 NOT NULL,
+    goal_difference_points integer DEFAULT 2 NOT NULL,
+    exact_score_points integer DEFAULT 2 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT scoring_rules_exact_score_points_non_negative CHECK ((exact_score_points >= 0)),
+    CONSTRAINT scoring_rules_goal_difference_points_non_negative CHECK ((goal_difference_points >= 0)),
+    CONSTRAINT scoring_rules_outcome_points_non_negative CHECK ((outcome_points >= 0))
+);
+
+
+--
 -- Name: sessions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -170,6 +187,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: scoring_rules scoring_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.scoring_rules
+    ADD CONSTRAINT scoring_rules_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -244,6 +269,7 @@ ALTER TABLE ONLY public.predictions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260603232247'),
 ('20260603224400'),
 ('20260603200526'),
 ('20260603195901'),
