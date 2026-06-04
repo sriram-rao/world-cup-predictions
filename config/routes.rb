@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   end
 
   resource :leaderboard, only: :show
+  get "groups/:group_name", to: "groups#show", as: :group
+  get "rounds/:round_number", to: "rounds#show", as: :round
   resources :users, only: [] do
     resource :password, only: %i[edit update], module: :users
   end

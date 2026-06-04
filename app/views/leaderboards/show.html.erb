@@ -3,7 +3,7 @@
     <div>
       <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
       <h1 class="mt-2 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">Leaderboard</h1>
-      <p class="mt-4 text-base text-slate-600 sm:text-lg"><%= @rule.outcome_points %> pt for outcome · <%= @rule.goal_difference_points %> pt for goal difference · <%= @rule.exact_score_points %> pt for exact score</p>
+      <p class="mt-4 text-base text-slate-600 sm:text-lg">Outcome: <%= @rule.outcome_points %> · Goal Difference: <%= @rule.goal_difference_points %> · Score: <%= @rule.exact_score_points %></p>
     </div>
 
     <div class="flex gap-2">

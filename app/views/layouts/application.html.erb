@@ -11,6 +11,13 @@
 
     <%= yield :head %>
 
+    <script>
+      (() => {
+        const theme = localStorage.getItem("theme") || "dark";
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
@@ -25,5 +32,33 @@
 
   <body class="bg-slate-50 text-slate-900 antialiased">
     <%= yield %>
+
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle color theme">
+      <span data-theme-toggle-icon>☀️</span>
+      <span data-theme-toggle-label>Light</span>
+    </button>
+
+    <script>
+      (() => {
+        const button = document.querySelector("[data-theme-toggle]");
+        const icon = document.querySelector("[data-theme-toggle-icon]");
+        const label = document.querySelector("[data-theme-toggle-label]");
+
+        const sync = () => {
+          const dark = document.documentElement.dataset.theme !== "light";
+          icon.textContent = dark ? "☀️" : "🌙";
+          label.textContent = dark ? "Light" : "Dark";
+        };
+
+        button.addEventListener("click", () => {
+          const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+          document.documentElement.dataset.theme = next;
+          localStorage.setItem("theme", next);
+          sync();
+        });
+
+        sync();
+      })();
+    </script>
   </body>
 </html>

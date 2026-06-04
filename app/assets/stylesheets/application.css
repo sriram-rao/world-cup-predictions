@@ -1,1 +1,115 @@
-/* App styles live in Tailwind utility classes. */
+/* Theme overrides for Tailwind utility-heavy views. Dark is default. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .bg-slate-50 {
+  background-color: #020617 !important;
+  color: #e2e8f0 !important;
+}
+
+:root[data-theme="dark"] .bg-white {
+  background-color: #0f172a !important;
+}
+
+:root[data-theme="dark"] .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+
+:root[data-theme="dark"] .bg-slate-950 {
+  background-color: #e2e8f0 !important;
+  color: #020617 !important;
+}
+
+:root[data-theme="dark"] .bg-blue-50 {
+  background-color: #172554 !important;
+}
+
+:root[data-theme="dark"] .text-slate-950,
+:root[data-theme="dark"] .text-slate-900,
+:root[data-theme="dark"] .text-slate-800,
+:root[data-theme="dark"] .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+:root[data-theme="dark"] .text-slate-600,
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .text-blue-700 {
+  color: #93c5fd !important;
+}
+
+:root[data-theme="dark"] .border-slate-100,
+:root[data-theme="dark"] .border-slate-200,
+:root[data-theme="dark"] .border-slate-300 {
+  border-color: #334155 !important;
+}
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] option {
+  background-color: #020617 !important;
+  color: #e2e8f0 !important;
+  border-color: #475569 !important;
+}
+
+:root[data-theme="dark"] .shadow-sm,
+:root[data-theme="dark"] .shadow-xl {
+  box-shadow: none !important;
+}
+
+:root[data-theme="dark"] .hover\:bg-slate-50:hover,
+:root[data-theme="dark"] .hover\:bg-slate-100:hover {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+:root[data-theme="dark"] .hover\:bg-slate-800:hover {
+  background-color: #cbd5e1 !important;
+  color: #020617 !important;
+}
+
+:root[data-theme="dark"] .hover\:text-slate-950:hover,
+:root[data-theme="dark"] .hover\:text-slate-800:hover {
+  color: #f8fafc !important;
+}
+
+:root[data-theme="dark"] .hover\:text-blue-800:hover {
+  color: #bfdbfe !important;
+}
+
+.theme-toggle {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 900;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.15);
+}
+
+:root[data-theme="dark"] .theme-toggle {
+  border-color: #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+@media (max-width: 640px) {
+  .theme-toggle {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.625rem 0.875rem;
+  }
+}

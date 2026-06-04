@@ -11,10 +11,14 @@
       <%= team_name_with_flag(@fixture.away_team) %>
     </h1>
 
-    <p class="mt-3 text-sm text-slate-500">
-      <%= @fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%A, %B %-d · %-I:%M %p PT") %>
-      · <%= venue(@fixture.location) %>
-      <% if fixture_stage(@fixture).present? %> · <%= fixture_stage(@fixture) %><% end %>
+    <p class="mt-3 flex min-w-0 flex-wrap items-center gap-1 text-sm text-slate-500">
+      <span class="shrink-0"><%= @fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%A, %B %-d · %-I:%M %p PT") %></span>
+      <span class="shrink-0">·</span>
+      <span class="min-w-0 truncate"><%= venue(@fixture.location) %></span>
+      <% if fixture_stage(@fixture).present? %>
+        <span class="shrink-0">·</span>
+        <%= link_to fixture_stage(@fixture), fixture_stage_path(@fixture), class: "shrink-0 font-bold text-blue-700 transition hover:text-blue-800" %>
+      <% end %>
     </p>
   </header>
 
