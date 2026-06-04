@@ -1,17 +1,12 @@
 <main class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-  <header class="mb-8">
-    <div class="flex items-center justify-between gap-4">
-      <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
-      <%= link_to "← Back", root_path(date: @back_date), class: "shrink-0 text-sm font-bold text-slate-600 transition hover:text-slate-950" %>
-    </div>
+  <% title = capture do %>
+    <%= team_name_with_flag(@fixture.home_team) %>
+    <span class="text-slate-400"><%= @fixture.result? ? "#{@fixture.home_score}–#{@fixture.away_score}" : "v" %></span>
+    <%= team_name_with_flag(@fixture.away_team) %>
+  <% end %>
 
-    <h1 class="mt-4 text-2xl font-black leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
-      <%= team_name_with_flag(@fixture.home_team) %>
-      <span class="text-slate-400"><%= @fixture.result? ? "#{@fixture.home_score}–#{@fixture.away_score}" : "v" %></span>
-      <%= team_name_with_flag(@fixture.away_team) %>
-    </h1>
-
-    <p class="mt-3 flex min-w-0 flex-wrap items-center gap-1 text-sm text-slate-500">
+  <% description = capture do %>
+    <span class="flex min-w-0 flex-wrap items-center gap-1 text-sm text-slate-500">
       <span class="shrink-0"><%= @fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%A, %B %-d · %-I:%M %p PT") %></span>
       <span class="shrink-0">·</span>
       <span class="min-w-0 truncate"><%= venue(@fixture.location) %></span>
@@ -19,8 +14,12 @@
         <span class="shrink-0">·</span>
         <%= link_to fixture_stage(@fixture), fixture_stage_path(@fixture), class: "shrink-0 font-bold text-blue-700 transition hover:text-blue-800" %>
       <% end %>
-    </p>
-  </header>
+    </span>
+  <% end %>
+
+  <% actions = link_to "← Back", root_path(date: @back_date), class: "shrink-0 text-sm font-bold text-slate-600 transition hover:text-slate-950" %>
+
+  <%= render "shared/page_header", title: title, description: description, title_class: "text-2xl font-black leading-tight text-slate-950 sm:text-4xl lg:text-5xl", actions: actions %>
 
   <% if flash[:notice].present? %>
     <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"><%= flash[:notice] %></div>

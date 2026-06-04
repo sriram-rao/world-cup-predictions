@@ -1,24 +1,22 @@
 <main class="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-  <header class="mb-8 flex items-start justify-between gap-4 sm:mb-10">
-    <div>
-      <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
-      <form class="relative mt-2 inline-block">
-        <button type="button"
-          onclick="const select = this.form.querySelector('select'); select.showPicker ? select.showPicker() : select.click();"
-          class="text-left text-4xl font-black tracking-tight text-slate-950 transition hover:text-blue-700 sm:text-6xl lg:text-7xl">
-          <%= @group_name %> <span class="text-2xl text-slate-400">▾</span>
-        </button>
-        <select class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-          style="color: #0f172a; background: #fff;"
-          onchange="if (this.value) window.location = this.value">
-          <%= options_for_select(@group_names.map { |group| [group, group_path(group)] }, group_path(@group_name)) %>
-        </select>
-      </form>
-      <p class="mt-4 text-base text-slate-600 sm:text-lg">Standings and fixtures</p>
-    </div>
+  <% title = capture do %>
+    <form class="relative inline-block">
+      <button type="button"
+        onclick="const select = this.form.querySelector('select'); select.showPicker ? select.showPicker() : select.click();"
+        class="text-left transition hover:text-blue-700">
+        <%= @group_name %> <span class="text-2xl text-slate-400">▾</span>
+      </button>
+      <select class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+        style="color: #0f172a; background: #fff;"
+        onchange="if (this.value) window.location = this.value">
+        <%= options_for_select(@group_names.map { |group| [group, group_path(group)] }, group_path(@group_name)) %>
+      </select>
+    </form>
+  <% end %>
 
-    <%= link_to "Fixtures", root_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
-  </header>
+  <% actions = link_to "Fixtures", root_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+
+  <%= render "shared/page_header", title: title, description: "Standings and fixtures", actions: actions %>
 
   <% if @fixtures.any? %>
     <section class="mb-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70">

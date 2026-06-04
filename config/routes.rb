@@ -8,13 +8,18 @@ Rails.application.routes.draw do
     resource :result, only: :update
   end
 
-  resource :leaderboard, only: :show
+  resource :leaderboard, only: :show do
+    get "var-robbed-me", to: "leaderboards#var_robbed_me"
+  end
+  get "leaderboards/:slug", to: "leaderboards#show", as: :named_leaderboard
   get "groups/:group_name", to: "groups#show", as: :group
   get "rounds/:round_number", to: "rounds#show", as: :round
   resources :users, only: [] do
     resource :password, only: %i[edit update], module: :users
   end
-  resource :scoring_rules, path: "rules", only: %i[show update]
+  resource :scoring_rules, path: "rules", only: %i[show update] do
+    get "var-robbed-me", to: "scoring_rules#var_robbed_me"
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

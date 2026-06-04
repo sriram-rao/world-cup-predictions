@@ -3,7 +3,7 @@ class FixturesController < ApplicationController
 
   def show
     @fixture = Fixture.find(params[:id])
-    @rule = ScoringRule.current
+    @rule = Leaderboard.standard
     @predictions = @fixture.predictions
       .includes(:user)
       .sort_by { |p| [-p.points(@rule), p.user.username] }

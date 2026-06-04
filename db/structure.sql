@@ -60,6 +60,33 @@ CREATE TABLE public.fixtures (
 
 
 --
+-- Name: leaderboards; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.leaderboards (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    slug character varying NOT NULL,
+    name character varying NOT NULL,
+    description text NOT NULL,
+    sort_order integer DEFAULT 0 NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    outcome_points integer DEFAULT 1 NOT NULL,
+    goal_difference_points integer DEFAULT 2 NOT NULL,
+    exact_score_points integer DEFAULT 2 NOT NULL,
+    outcome_description text NOT NULL,
+    goal_difference_description text NOT NULL,
+    exact_score_description text NOT NULL,
+    goal_difference_rule character varying DEFAULT 'exact_goal_difference'::character varying NOT NULL,
+    exact_score_rule character varying DEFAULT 'exact_score'::character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT leaderboards_exact_score_points_non_negative CHECK ((exact_score_points >= 0)),
+    CONSTRAINT leaderboards_goal_difference_points_non_negative CHECK ((goal_difference_points >= 0)),
+    CONSTRAINT leaderboards_outcome_points_non_negative CHECK ((outcome_points >= 0))
+);
+
+
+--
 -- Name: predictions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -94,6 +121,7 @@ CREATE TABLE public.scoring_rules (
     exact_score_points integer DEFAULT 2 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
+    variant character varying DEFAULT 'standard'::character varying NOT NULL,
     CONSTRAINT scoring_rules_exact_score_points_non_negative CHECK ((exact_score_points >= 0)),
     CONSTRAINT scoring_rules_goal_difference_points_non_negative CHECK ((goal_difference_points >= 0)),
     CONSTRAINT scoring_rules_outcome_points_non_negative CHECK ((outcome_points >= 0))
@@ -171,6 +199,14 @@ ALTER TABLE ONLY public.fixtures
 
 
 --
+-- Name: leaderboards leaderboards_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.leaderboards
+    ADD CONSTRAINT leaderboards_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: predictions predictions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -218,10 +254,24 @@ CREATE UNIQUE INDEX index_fixtures_on_match_number ON public.fixtures USING btre
 
 
 --
+-- Name: index_leaderboards_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_leaderboards_on_slug ON public.leaderboards USING btree (slug);
+
+
+--
 -- Name: index_predictions_on_user_id_and_fixture_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_predictions_on_user_id_and_fixture_id ON public.predictions USING btree (user_id, fixture_id);
+
+
+--
+-- Name: index_scoring_rules_on_variant; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_scoring_rules_on_variant ON public.scoring_rules USING btree (variant);
 
 
 --
@@ -269,6 +319,9 @@ ALTER TABLE ONLY public.predictions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260604000300'),
+('20260604000200'),
+('20260604000100'),
 ('20260603232247'),
 ('20260603224400'),
 ('20260603200526'),

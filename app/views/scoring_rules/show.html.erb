@@ -1,16 +1,13 @@
 <main class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-  <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-    <div>
-      <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
-      <h1 class="mt-2 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl">Rules</h1>
-      <p class="mt-4 text-base text-slate-600 sm:text-lg">Points stack together for each match.</p>
-    </div>
-
-    <div class="flex gap-2">
+  <% actions = capture do %>
+    <div class="flex flex-wrap gap-2">
+      <%= link_to @other_rules_label, @other_rules_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
       <%= link_to "Fixtures", root_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
-      <%= link_to "Leaderboard", leaderboard_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+      <%= link_to "Leaderboard", @leaderboard_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
     </div>
-  </header>
+  <% end %>
+
+  <%= render "shared/page_header", title: @title, description: @description, title_class: "text-4xl font-black tracking-tight text-slate-950 sm:text-6xl", actions: actions %>
 
   <% if flash[:notice].present? %>
     <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"><%= flash[:notice] %></div>
@@ -22,40 +19,38 @@
 
   <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 sm:p-8">
     <% if admin_mode? %>
-      <%= form_with model: @rule, url: scoring_rules_path, method: :patch, class: "space-y-4" do |form| %>
-        <div class="hidden text-xs font-black uppercase tracking-wide text-slate-500 sm:grid sm:grid-cols-[minmax(0,1fr)_6rem]">
+      <%= form_with model: @leaderboard, url: scoring_rules_path(variant: @variant), method: :patch, class: "space-y-4" do |form| %>
+        <div class="hidden text-xs font-black uppercase tracking-wide text-slate-500 sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_6rem] sm:gap-4">
           <span>Rule</span>
+          <span>Description</span>
           <span class="text-center">Points</span>
         </div>
 
-        <% [["Correct outcome", :outcome_points], ["Correct signed goal difference", :goal_difference_points], ["Exact score", :exact_score_points]].each do |label, field| %>
-          <label class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_6rem] sm:items-center">
+        <% @labels.each do |label, description_field, points_field| %>
+          <label class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_6rem] sm:items-center sm:gap-4">
             <span class="font-bold text-slate-700"><%= label %></span>
-            <%= form.number_field field, min: 0, class: "w-24 rounded-xl border border-slate-300 bg-white px-3 py-2 text-center text-lg font-black text-slate-950 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
+            <%= form.text_area description_field, rows: 2, class: "rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-600 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
+            <%= form.number_field points_field, min: 0, class: "w-24 rounded-xl border border-slate-300 bg-white px-3 py-2 text-center text-lg font-black text-slate-950 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100" %>
           </label>
         <% end %>
 
         <%= form.submit "Save rules", class: "cursor-pointer rounded-xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800" %>
       <% end %>
     <% else %>
-      <div class="mb-3 grid grid-cols-[minmax(0,1fr)_5rem] text-xs font-black uppercase tracking-wide text-slate-500">
+      <div class="mb-3 grid grid-cols-[minmax(0,1fr)_5rem] text-xs font-black uppercase tracking-wide text-slate-500 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_5rem] sm:gap-4">
         <span>Rule</span>
+        <span class="hidden sm:block">Description</span>
         <span class="text-right">Points</span>
       </div>
 
       <dl class="space-y-4">
-        <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
-          <dt class="font-bold text-slate-700">Correct outcome</dt>
-          <dd class="text-2xl font-black text-slate-950"><%= @rule.outcome_points %></dd>
-        </div>
-        <div class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
-          <dt class="font-bold text-slate-700">Correct signed goal difference</dt>
-          <dd class="text-2xl font-black text-slate-950"><%= @rule.goal_difference_points %></dd>
-        </div>
-        <div class="flex items-center justify-between gap-4">
-          <dt class="font-bold text-slate-700">Exact score</dt>
-          <dd class="text-2xl font-black text-slate-950"><%= @rule.exact_score_points %></dd>
-        </div>
+        <% @labels.each do |label, description_field, points_field| %>
+          <div class="grid grid-cols-[minmax(0,1fr)_5rem] gap-x-4 gap-y-1 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_5rem] sm:items-center sm:gap-4">
+            <dt class="font-bold text-slate-700"><%= label %></dt>
+            <dd class="col-span-2 text-sm font-semibold text-slate-500 sm:col-span-1 sm:col-start-2 sm:row-start-1"><%= @leaderboard.public_send(description_field) %></dd>
+            <dd class="col-start-2 row-start-1 text-right text-2xl font-black text-slate-950 sm:col-start-3"><%= @leaderboard.public_send(points_field) %></dd>
+          </div>
+        <% end %>
       </dl>
     <% end %>
   </section>

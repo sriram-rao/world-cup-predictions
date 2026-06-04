@@ -1,16 +1,15 @@
 <main class="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-  <header class="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-start sm:justify-between">
-    <div>
-      <p class="text-sm font-bold uppercase tracking-widest text-slate-500">World Cup Predictions</p>
-      <h1 class="mt-2 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">Leaderboard</h1>
-      <p class="mt-4 text-base text-slate-600 sm:text-lg">Outcome: <%= @rule.outcome_points %> · Goal Difference: <%= @rule.goal_difference_points %> · Score: <%= @rule.exact_score_points %></p>
-    </div>
-
-    <div class="flex gap-2">
-      <%= link_to "Rules", scoring_rules_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+  <% actions = capture do %>
+    <div class="flex flex-wrap gap-2">
+      <% @leaderboards.each do |leaderboard| %>
+        <%= link_to leaderboard.name, leaderboard.slug == Leaderboard::STANDARD_SLUG ? leaderboard_path : named_leaderboard_path(leaderboard.slug), class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 #{"ring-2 ring-blue-500" if leaderboard == @leaderboard}" %>
+      <% end %>
+      <%= link_to "Rules", @rules_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
       <%= link_to "Fixtures", root_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
     </div>
-  </header>
+  <% end %>
+
+  <%= render "shared/page_header", title: @leaderboard.name, description: @leaderboard.description, actions: actions %>
 
   <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70">
     <% if @rows.any? %>
@@ -36,8 +35,8 @@
             </span>
             <span class="text-right text-xl font-black text-slate-950"><%= row[:points] %></span>
             <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:correct_outcomes] %></span>
-            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:correct_goal_differences] %></span>
-            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:exact_scores] %></span>
+            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:goal_differences] %></span>
+            <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:scorelines] %></span>
             <span class="hidden text-right text-sm font-bold text-slate-600 sm:block"><%= row[:predictions] %></span>
           </li>
         <% end %>
