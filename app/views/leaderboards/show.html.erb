@@ -1,8 +1,8 @@
 <main class="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
   <% actions = capture do %>
     <div class="flex flex-wrap gap-2">
-      <% @leaderboards.each do |leaderboard| %>
-        <%= link_to leaderboard.name, leaderboard.slug == Leaderboard::STANDARD_SLUG ? leaderboard_path : named_leaderboard_path(leaderboard.slug), class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 #{"ring-2 ring-blue-500" if leaderboard == @leaderboard}" %>
+      <% @leaderboards.reject { |leaderboard| leaderboard == @leaderboard }.each do |leaderboard| %>
+        <%= link_to leaderboard.name, leaderboard.slug == Leaderboard::STANDARD_SLUG ? leaderboard_path : named_leaderboard_path(leaderboard.slug), class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
       <% end %>
       <%= link_to "Rules", @rules_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>
       <%= link_to "Fixtures", root_path, class: "rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" %>

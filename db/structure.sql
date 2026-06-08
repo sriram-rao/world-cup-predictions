@@ -80,6 +80,7 @@ CREATE TABLE public.leaderboards (
     exact_score_rule character varying DEFAULT 'exact_score'::character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
+    outcome_rule character varying DEFAULT 'exact_outcome'::character varying NOT NULL,
     CONSTRAINT leaderboards_exact_score_points_non_negative CHECK ((exact_score_points >= 0)),
     CONSTRAINT leaderboards_goal_difference_points_non_negative CHECK ((goal_difference_points >= 0)),
     CONSTRAINT leaderboards_outcome_points_non_negative CHECK ((outcome_points >= 0))
@@ -319,6 +320,11 @@ ALTER TABLE ONLY public.predictions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260604000800'),
+('20260604000700'),
+('20260604000600'),
+('20260604000500'),
+('20260604000400'),
 ('20260604000300'),
 ('20260604000200'),
 ('20260604000100'),

@@ -47,7 +47,7 @@
         <% @labels.each do |label, description_field, points_field| %>
           <div class="grid grid-cols-[minmax(0,1fr)_5rem] gap-x-4 gap-y-1 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_5rem] sm:items-center sm:gap-4">
             <dt class="font-bold text-slate-700"><%= label %></dt>
-            <dd class="col-span-2 text-sm font-semibold text-slate-500 sm:col-span-1 sm:col-start-2 sm:row-start-1"><%= @leaderboard.public_send(description_field) %></dd>
+            <dd class="col-span-2 whitespace-pre-line text-sm font-semibold text-slate-500 sm:col-span-1 sm:col-start-2 sm:row-start-1"><%= @leaderboard.public_send(description_field) %></dd>
             <dd class="col-start-2 row-start-1 text-right text-2xl font-black text-slate-950 sm:col-start-3"><%= @leaderboard.public_send(points_field) %></dd>
           </div>
         <% end %>

@@ -37,7 +37,7 @@ class LeaderboardsController < ApplicationController
         user_predictions = grouped_predictions[user] || []
         goal_differences = user_predictions.count { |prediction| leaderboard.goal_difference_correct?(prediction) }
         scorelines = user_predictions.count { |prediction| leaderboard.exact_score_correct?(prediction) }
-        correct_outcomes = user_predictions.count(&:correct_outcome?)
+        correct_outcomes = user_predictions.count { |prediction| leaderboard.outcome_correct?(prediction) }
 
         {
           user: user,

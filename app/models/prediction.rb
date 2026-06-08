@@ -12,7 +12,7 @@ class Prediction < ApplicationRecord
     return [] unless fixture.result?
 
     [
-      { label: "Result", points: correct_outcome? ? leaderboard.outcome_points : 0 },
+      { label: "Result", points: leaderboard.outcome_correct?(self) ? leaderboard.outcome_points : 0 },
       { label: "GD", points: leaderboard.goal_difference_correct?(self) ? leaderboard.goal_difference_points : 0 },
       { label: "Score", points: leaderboard.exact_score_correct?(self) ? leaderboard.exact_score_points : 0 }
     ]
