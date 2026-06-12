@@ -10,7 +10,7 @@
       <%= form_with url: root_path, method: :get, class: "relative inline-block" do |form| %>
         <span class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-950 sm:text-base">
           <span aria-hidden="true">📅</span>
-          <span>Matchday: <%= @fixture_date.strftime("%A, %B %-d, %Y") %> PT</span>
+          <span>Matchday: <%= @fixture_date.strftime("%A, %B %-d, %Y") %> (US)</span>
         </span>
         <%= form.date_field :date,
           value: @fixture_date.iso8601,
