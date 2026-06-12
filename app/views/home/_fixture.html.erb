@@ -16,8 +16,8 @@
 
 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70 sm:rounded-3xl sm:p-6 lg:p-7">
   <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-2">
-    <time class="shrink-0 text-sm font-extrabold text-amber-600 sm:text-base" datetime="<%= fixture.match_date.iso8601 %>">
-      <%= fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%-I:%M %p") %>
+    <time class="shrink-0 text-sm font-extrabold text-amber-600 sm:text-base" datetime="<%= fixture.match_date.iso8601 %>" data-local-time="time">
+      <%= fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%-I:%M %p PT") %>
     </time>
 
     <p class="min-w-0 truncate text-center text-sm text-slate-500"><%= venue(fixture.location) %></p>

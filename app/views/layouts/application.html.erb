@@ -53,6 +53,20 @@
         sync();
       })();
 
+      (() => {
+        const formats = {
+          time: { hour: "numeric", minute: "2-digit", timeZoneName: "short" },
+          short: { month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" },
+          full: { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }
+        };
+
+        document.querySelectorAll("time[data-local-time]").forEach((time) => {
+          const date = new Date(time.dateTime);
+          const format = formats[time.dataset.localTime] || formats.time;
+          if (!Number.isNaN(date.valueOf())) time.textContent = new Intl.DateTimeFormat(undefined, format).format(date);
+        });
+      })();
+
       document.addEventListener("click", (event) => {
         document.querySelectorAll("details[data-click-outside-close][open]").forEach((details) => {
           if (!details.contains(event.target)) details.removeAttribute("open");

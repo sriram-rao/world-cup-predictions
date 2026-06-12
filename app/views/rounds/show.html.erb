@@ -12,7 +12,7 @@
           <div class="divide-y divide-slate-100">
             <% fixtures.each do |fixture| %>
               <%= link_to fixture_path(fixture), class: "grid gap-2 px-5 py-4 transition hover:bg-slate-50 sm:grid-cols-[7rem_minmax(0,1fr)_minmax(0,1fr)] sm:items-center" do %>
-                <time class="text-sm font-extrabold text-amber-600"><%= fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%-m/%-d %-I:%M %p") %></time>
+                <time class="text-sm font-extrabold text-amber-600" datetime="<%= fixture.match_date.iso8601 %>" data-local-time="short"><%= fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%-m/%-d %-I:%M %p PT") %></time>
                 <div class="min-w-0 text-sm font-black text-slate-950 sm:text-base">
                   <span><%= team_name_with_flag(fixture.home_team) %></span>
                   <span class="mx-2 text-slate-400"><%= fixture.result? ? "#{fixture.home_score}–#{fixture.away_score}" : "v" %></span>

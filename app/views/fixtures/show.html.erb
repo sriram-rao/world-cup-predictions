@@ -7,7 +7,7 @@
 
   <% description = capture do %>
     <span class="flex min-w-0 flex-wrap items-center gap-1 text-sm text-slate-500">
-      <span class="shrink-0"><%= @fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%A, %B %-d · %-I:%M %p PT") %></span>
+      <time class="shrink-0" datetime="<%= @fixture.match_date.iso8601 %>" data-local-time="full"><%= @fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%A, %B %-d · %-I:%M %p PT") %></time>
       <span class="shrink-0">·</span>
       <span class="min-w-0 truncate"><%= venue(@fixture.location) %></span>
       <% if fixture_stage(@fixture).present? %>
