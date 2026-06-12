@@ -14,16 +14,25 @@ class PredictionsController < ApplicationController
       fixture = Fixture.find(params[:fixture_id])
 
       if fixture.locked?
-        redirect_back fallback_location: fixture_day_path(fixture), alert: "Predictions are locked for that match."
+        respond_to do |format|
+          format.html { redirect_back fallback_location: fixture_day_path(fixture), alert: "Predictions are locked for that match." }
+          format.json { render json: { error: "Predictions are locked for that match." }, status: :unprocessable_content }
+        end
         return
       end
 
       prediction = Current.user.predictions.find_or_initialize_by(fixture: fixture)
 
       if prediction.update(prediction_params)
-        redirect_back fallback_location: fixture_day_path(fixture), notice: "Prediction saved."
+        respond_to do |format|
+          format.html { redirect_back fallback_location: fixture_day_path(fixture), notice: "Prediction saved." }
+          format.json { render json: { status: "saved" } }
+        end
       else
-        redirect_back fallback_location: fixture_day_path(fixture), alert: prediction.errors.full_messages.to_sentence
+        respond_to do |format|
+          format.html { redirect_back fallback_location: fixture_day_path(fixture), alert: prediction.errors.full_messages.to_sentence }
+          format.json { render json: { error: prediction.errors.full_messages.to_sentence }, status: :unprocessable_content }
+        end
       end
     end
 

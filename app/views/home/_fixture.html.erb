@@ -64,12 +64,12 @@
       </div>
 
       <% if open %>
-        <%= form_with model: prediction, url: fixture_prediction_path(fixture), class: "mt-2" do |form| %>
+        <%= form_with model: prediction, url: fixture_prediction_path(fixture), class: "mt-2", data: { autosave_prediction: true } do |form| %>
           <div class="flex items-center justify-between gap-4">
             <div class="flex items-center gap-2">
-              <%= form.number_field :home_score, min: 0, required: true, class: score_input %>
+              <%= form.number_field :home_score, min: 0, required: true, class: score_input, data: { autosave_field: true } %>
               <span class="font-black text-slate-400">–</span>
-              <%= form.number_field :away_score, min: 0, required: true, class: score_input %>
+              <%= form.number_field :away_score, min: 0, required: true, class: score_input, data: { autosave_field: true } %>
             </div>
 
             <% if fixture.result? %>
@@ -83,9 +83,7 @@
               <span class="text-sm font-black text-slate-400">—</span>
             <% end %>
           </div>
-          <div class="mt-2 flex justify-center">
-            <%= form.submit prediction.persisted? ? "Update" : "Save", class: "w-full cursor-pointer rounded-xl bg-slate-950 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-800 sm:w-auto" %>
-          </div>
+          <p class="mt-2 text-center text-xs font-bold text-slate-400" data-autosave-status>Auto-saves</p>
         <% end %>
       <% elsif prediction.persisted? %>
         <div class="mt-1 flex items-center justify-between gap-4">
