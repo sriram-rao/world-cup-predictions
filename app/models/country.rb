@@ -54,7 +54,7 @@ class Country < ApplicationRecord
 
   FOOTBALL_DATA_ALIASES = {
     "Bosnia and Herzegovina" => "Bosnia-Herzegovina",
-    "Cabo Verde" => "Cape Verde",
+    "Cabo Verde" => ["Cape Verde", "Cape Verde Islands"],
     "Congo DR" => "DR Congo",
     "Côte d'Ivoire" => "Ivory Coast",
     "IR Iran" => "Iran",
@@ -77,9 +77,11 @@ class Country < ApplicationRecord
       find_or_initialize_by(name: name).update!(emoji: emoji)
     end
 
-    FOOTBALL_DATA_ALIASES.each do |country_name, alias_name|
+    FOOTBALL_DATA_ALIASES.each do |country_name, aliases|
       country = find_by!(name: country_name)
-      country.aliases.find_or_initialize_by(source: "football_data", name: alias_name).save!
+      Array(aliases).each do |alias_name|
+        country.aliases.find_or_initialize_by(source: "football_data", name: alias_name).save!
+      end
     end
   end
 

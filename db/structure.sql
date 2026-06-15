@@ -379,6 +379,7 @@ ALTER TABLE ONLY public.predictions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260604000800'),
 ('20260604000700'),
 ('20260604000600'),
 ('20260604000500'),
