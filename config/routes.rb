@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resource :prediction, only: %i[create update]
     resource :result, only: :update
   end
+  post "results/import", to: "results#import", as: :import_results
 
   resource :leaderboard, only: :show do
     get "var-robbed-me", to: "leaderboards#var_robbed_me"
@@ -17,8 +18,8 @@ Rails.application.routes.draw do
   resources :users, only: [] do
     resource :password, only: %i[edit update], module: :users
   end
-  resource :scoring_rules, path: "rules", only: %i[show update] do
-    get "var-robbed-me", to: "scoring_rules#var_robbed_me"
+  resource :scoring_rules, path: "rules", controller: "leaderboard_rules", only: %i[show update] do
+    get "var-robbed-me", action: :var_robbed_me
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

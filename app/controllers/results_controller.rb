@@ -13,6 +13,22 @@ class ResultsController < ApplicationController
     end
   end
 
+  def import
+    date = Date.iso8601(params.fetch(:date))
+    result = FootballDataResultImporter.new.import_day(date)
+    Rails.cache.write("football_data_results/#{date.iso8601}", true, expires_in: 1.minute)
+    Rails.logger.info("Football-data manual import cached for #{date}: expires_in=1.minute")
+
+    message = "Updated #{result.updated.count}. Skipped #{result.skipped.count}. Unmatched #{result.unmatched.count}."
+    message += " #{result.updated.join("; ")}" if result.updated.any?
+    redirect_to root_path(date: date.iso8601), notice: message
+  rescue KeyError
+    redirect_to root_path(date: params[:date]), alert: "API_KEY missing. Add it to Render web service env vars."
+  rescue => error
+    Rails.logger.warn("Football-data manual import failed: #{error.class}: #{error.message}")
+    redirect_to root_path(date: params[:date]), alert: "Result import failed: #{error.message}"
+  end
+
   private
     def require_admin
       redirect_to root_path, alert: "Admins only." unless admin_mode?

@@ -6,14 +6,6 @@ class FootballDataResultImporter
   PACIFIC_TIME_ZONE = "Pacific Time (US & Canada)"
   SEASON = 2026
 
-  TEAM_ALIASES = {
-    "bosniaherzegovina" => "bosniaandherzegovina",
-    "southkorea" => "korearepublic",
-    "turkey" => "turkiye",
-    "unitedstates" => "usa",
-    "curacao" => "curacao"
-  }.freeze
-
   Result = Data.define(:updated, :skipped, :unmatched)
 
   def initialize(token: ENV.fetch("API_KEY") { ENV.fetch("FOOTBALL_DATA_API_TOKEN") })
@@ -23,8 +15,10 @@ class FootballDataResultImporter
 
   def import_day(date)
     date = Date.iso8601(date.to_s)
+    Rails.logger.info("Football-data import_day date=#{date}")
     matches = fetch_matches(date)
     fixtures = fixtures_for(date)
+    Rails.logger.info("Football-data import_day loaded matches=#{matches.count} fixtures=#{fixtures.count} date=#{date}")
 
     updated = []
     skipped = []
@@ -46,6 +40,7 @@ class FootballDataResultImporter
       end
 
       fixture.update!(home_score: home_score, away_score: away_score)
+      Rails.logger.info("Football-data updated fixture_id=#{fixture.id} #{fixture.home_team} #{home_score}-#{away_score} #{fixture.away_team}")
       updated << "#{fixture.home_team} #{home_score}-#{away_score} #{fixture.away_team}"
     end
 
@@ -67,7 +62,9 @@ class FootballDataResultImporter
       request = Net::HTTP::Get.new(uri)
       request["X-Auth-Token"] = token
 
+      Rails.logger.info("Football-data fetch #{uri}")
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
+      Rails.logger.info("Football-data response code=#{response.code}")
       raise "football-data API error #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
       JSON.parse(response.body).fetch("matches")
@@ -80,21 +77,16 @@ class FootballDataResultImporter
     end
 
     def find_fixture(fixtures, match)
-      home = normalize(match.dig("homeTeam", "name"))
-      away = normalize(match.dig("awayTeam", "name"))
+      home = CountryLookup.from_football_data(match.dig("homeTeam", "name"))&.normalized_name || Country.normalize(match.dig("homeTeam", "name"))
+      away = CountryLookup.from_football_data(match.dig("awayTeam", "name"))&.normalized_name || Country.normalize(match.dig("awayTeam", "name"))
 
       fixtures.find do |fixture|
-        normalize(fixture.home_team) == home && normalize(fixture.away_team) == away
+        Country.normalize(fixture.home_team) == home && Country.normalize(fixture.away_team) == away
       end
     end
 
     def api_match_date(match)
       Time.iso8601(match.fetch("utcDate")).in_time_zone(pacific_time).to_date
-    end
-
-    def normalize(name)
-      normalized = ActiveSupport::Inflector.transliterate(name.to_s).downcase.gsub(/[^a-z0-9]/, "")
-      TEAM_ALIASES.fetch(normalized, normalized)
     end
 
     def skip(match, reason)

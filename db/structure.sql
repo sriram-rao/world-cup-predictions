@@ -40,6 +40,35 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: countries; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.countries (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name character varying NOT NULL,
+    emoji character varying NOT NULL,
+    normalized_name character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: country_aliases; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.country_aliases (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    country_id uuid NOT NULL,
+    source character varying NOT NULL,
+    name character varying NOT NULL,
+    normalized_name character varying NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: fixtures; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -112,24 +141,6 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: scoring_rules; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.scoring_rules (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    outcome_points integer DEFAULT 1 NOT NULL,
-    goal_difference_points integer DEFAULT 2 NOT NULL,
-    exact_score_points integer DEFAULT 2 NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    variant character varying DEFAULT 'standard'::character varying NOT NULL,
-    CONSTRAINT scoring_rules_exact_score_points_non_negative CHECK ((exact_score_points >= 0)),
-    CONSTRAINT scoring_rules_goal_difference_points_non_negative CHECK ((goal_difference_points >= 0)),
-    CONSTRAINT scoring_rules_outcome_points_non_negative CHECK ((outcome_points >= 0))
-);
-
-
---
 -- Name: sessions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -192,6 +203,22 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
+-- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.countries
+    ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: country_aliases country_aliases_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_aliases
+    ADD CONSTRAINT country_aliases_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: fixtures fixtures_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -224,14 +251,6 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: scoring_rules scoring_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.scoring_rules
-    ADD CONSTRAINT scoring_rules_pkey PRIMARY KEY (id);
-
-
---
 -- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -245,6 +264,34 @@ ALTER TABLE ONLY public.sessions
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_countries_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_countries_on_name ON public.countries USING btree (name);
+
+
+--
+-- Name: index_countries_on_normalized_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_countries_on_normalized_name ON public.countries USING btree (normalized_name);
+
+
+--
+-- Name: index_country_aliases_on_country_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_country_aliases_on_country_id ON public.country_aliases USING btree (country_id);
+
+
+--
+-- Name: index_country_aliases_on_source_and_normalized_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_country_aliases_on_source_and_normalized_name ON public.country_aliases USING btree (source, normalized_name);
 
 
 --
@@ -266,13 +313,6 @@ CREATE UNIQUE INDEX index_leaderboards_on_slug ON public.leaderboards USING btre
 --
 
 CREATE UNIQUE INDEX index_predictions_on_user_id_and_fixture_id ON public.predictions USING btree (user_id, fixture_id);
-
-
---
--- Name: index_scoring_rules_on_variant; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_scoring_rules_on_variant ON public.scoring_rules USING btree (variant);
 
 
 --
@@ -306,6 +346,14 @@ ALTER TABLE ONLY public.sessions
 
 
 --
+-- Name: country_aliases fk_rails_77cb276bcf; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country_aliases
+    ADD CONSTRAINT fk_rails_77cb276bcf FOREIGN KEY (country_id) REFERENCES public.countries(id);
+
+
+--
 -- Name: predictions fk_rails_7eed2ccc94; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -320,8 +368,6 @@ ALTER TABLE ONLY public.predictions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20260604000800'),
-('20260604000700'),
 ('20260604000600'),
 ('20260604000500'),
 ('20260604000400'),

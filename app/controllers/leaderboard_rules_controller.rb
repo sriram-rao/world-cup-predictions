@@ -1,4 +1,4 @@
-class ScoringRulesController < ApplicationController
+class LeaderboardRulesController < ApplicationController
   allow_unauthenticated_access only: %i[show var_robbed_me]
   before_action :require_admin, only: :update
 

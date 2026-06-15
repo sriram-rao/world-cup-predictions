@@ -6,7 +6,8 @@
     aria: { label: "Open World Cup fixtures on FotMob in a new tab" } %>
 
   <% actions = capture do %>
-    <div class="flex items-center justify-between gap-2">
+    <div class="grid gap-2">
+      <div class="flex items-center justify-between gap-2">
       <%= form_with url: root_path, method: :get, class: "relative min-w-0" do |form| %>
         <span class="inline-flex max-w-full cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-950 sm:px-4 sm:text-base">
           <span aria-hidden="true">📅</span>
@@ -26,6 +27,14 @@
         <%= link_to "Today", root_path, class: "border-r border-slate-200 px-2 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:px-4" %>
         <%= link_to "→", root_path(date: @next_date.iso8601), class: "px-2 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:px-4" %>
       </nav>
+      </div>
+
+      <% if admin_mode? %>
+        <%= button_to "Update results", import_results_path,
+          method: :post,
+          params: { date: @fixture_date.iso8601 },
+          class: "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+      <% end %>
     </div>
   <% end %>
 

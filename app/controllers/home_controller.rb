@@ -31,15 +31,27 @@ class HomeController < ApplicationController
 
   private
     def refresh_results_if_needed(date)
-      return unless ENV["API_KEY"].present? || ENV["FOOTBALL_DATA_API_TOKEN"].present?
+      unless ENV["API_KEY"].present? || ENV["FOOTBALL_DATA_API_TOKEN"].present?
+        Rails.logger.info("Football-data auto import skipped for #{date}: missing API key")
+        return
+      end
 
       cache_key = "football_data_results/#{date.iso8601}"
-      return if Rails.cache.read(cache_key)
+      if Rails.cache.read(cache_key)
+        Rails.logger.info("Football-data auto import skipped for #{date}: cache hit")
+        return
+      end
 
-      FootballDataResultImporter.new.import_day(date)
-      Rails.cache.write(cache_key, true, expires_in: 1.hour)
+      Rails.logger.info("Football-data auto import started for #{date}")
+      result = FootballDataResultImporter.new.import_day(date)
+      Rails.logger.info("Football-data auto import finished for #{date}: updated=#{result.updated.count} skipped=#{result.skipped.count} unmatched=#{result.unmatched.count}")
+      Rails.logger.info("Football-data auto import skipped for #{date}: #{result.skipped.join("; ")}") if result.skipped.any?
+      Rails.logger.info("Football-data auto import unmatched for #{date}: #{result.unmatched.join("; ")}") if result.unmatched.any?
+      Rails.cache.write(cache_key, true, expires_in: 1.minute)
+      Rails.logger.info("Football-data auto import cached for #{date}: expires_in=1.minute")
     rescue => error
-      Rails.logger.warn("Football-data result import failed: #{error.class}: #{error.message}")
+      Rails.logger.warn("Football-data auto import failed for #{date}: #{error.class}: #{error.message}")
       Rails.cache.write(cache_key, true, expires_in: 15.minutes)
+      Rails.logger.info("Football-data auto import failure cached for #{date}: expires_in=15.minutes")
     end
 end

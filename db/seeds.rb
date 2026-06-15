@@ -3,10 +3,9 @@ require "csv"
 fixtures_path = Rails.root.join("db/data/fixtures.csv")
 pacific_time = ActiveSupport::TimeZone["Pacific Time (US & Canada)"]
 
-ScoringRule.current(ScoringRule::STANDARD)
-ScoringRule.current(ScoringRule::VAR_ROBBED_ME)
 Leaderboard.standard
 Leaderboard.var_robbed_me
+Country.seed_defaults!
 
 fixtures_imported = 0
 

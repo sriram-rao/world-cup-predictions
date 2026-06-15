@@ -1,57 +1,6 @@
 module FlagHelper
-  FLAGS = {
-    "Algeria"                => "🇩🇿",
-    "Argentina"              => "🇦🇷",
-    "Australia"              => "🇦🇺",
-    "Austria"                => "🇦🇹",
-    "Belgium"                => "🇧🇪",
-    "Bosnia and Herzegovina" => "🇧🇦",
-    "Brazil"                 => "🇧🇷",
-    "Cabo Verde"             => "🇨🇻",
-    "Canada"                 => "🇨🇦",
-    "Colombia"               => "🇨🇴",
-    "Congo DR"               => "🇨🇩",
-    "Croatia"                => "🇭🇷",
-    "Curaçao"                => "🇨🇼",
-    "Czechia"                => "🇨🇿",
-    "Côte d'Ivoire"          => "🇨🇮",
-    "Ecuador"                => "🇪🇨",
-    "Egypt"                  => "🇪🇬",
-    "England"                => "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    "France"                 => "🇫🇷",
-    "Germany"                => "🇩🇪",
-    "Ghana"                  => "🇬🇭",
-    "Haiti"                  => "🇭🇹",
-    "IR Iran"                => "🇮🇷",
-    "Iraq"                   => "🇮🇶",
-    "Japan"                  => "🇯🇵",
-    "Jordan"                 => "🇯🇴",
-    "Korea Republic"         => "🇰🇷",
-    "Mexico"                 => "🇲🇽",
-    "Morocco"                => "🇲🇦",
-    "Netherlands"            => "🇳🇱",
-    "New Zealand"            => "🇳🇿",
-    "Norway"                 => "🇳🇴",
-    "Panama"                 => "🇵🇦",
-    "Paraguay"               => "🇵🇾",
-    "Portugal"               => "🇵🇹",
-    "Qatar"                  => "🇶🇦",
-    "Saudi Arabia"           => "🇸🇦",
-    "Scotland"               => "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-    "Senegal"                => "🇸🇳",
-    "South Africa"           => "🇿🇦",
-    "Spain"                  => "🇪🇸",
-    "Sweden"                 => "🇸🇪",
-    "Switzerland"            => "🇨🇭",
-    "Tunisia"                => "🇹🇳",
-    "Türkiye"                => "🇹🇷",
-    "USA"                    => "🇺🇸",
-    "Uruguay"                => "🇺🇾",
-    "Uzbekistan"             => "🇺🇿"
-  }.freeze
-
   def team_name_with_flag(name)
-    flag = FLAGS[name]
-    flag ? "#{flag} #{name}" : name
+    emoji = CountryLookup.emoji_for(name)
+    emoji ? "#{emoji} #{name}" : name
   end
 end
