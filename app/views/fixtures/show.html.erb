@@ -44,15 +44,15 @@
           <% row_class = if points.nil?
             ""
           elsif points >= @max_points
-            "bg-emerald-50"
+            "points-awesome"
           elsif points >= 3
-            "bg-blue-50"
+            "points-good"
           elsif points > 1
-            "bg-amber-50"
+            "points-okay"
           elsif points == 1
-            "bg-white"
+            "points-one"
           else
-            "bg-slate-50"
+            "points-zero"
           end %>
           <% row_class = "#{row_class} border-l-4 border-l-blue-500" if prediction == @user_prediction %>
           <% points_class = if points.nil?

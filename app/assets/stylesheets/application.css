@@ -1,4 +1,24 @@
 /* Theme overrides for Tailwind utility-heavy views. Dark is default. */
+.points-awesome {
+  background-color: #ecfdf5;
+}
+
+.points-good {
+  background-color: #eff6ff;
+}
+
+.points-okay {
+  background-color: #fffbeb;
+}
+
+.points-one {
+  background-color: #ffffff;
+}
+
+.points-zero {
+  background-color: #f8fafc;
+}
+
 :root[data-theme="dark"] {
   color-scheme: dark;
 }
@@ -22,8 +42,25 @@
   color: #020617 !important;
 }
 
-:root[data-theme="dark"] .bg-blue-50 {
+:root[data-theme="dark"] .bg-blue-50,
+:root[data-theme="dark"] .points-good {
   background-color: #172554 !important;
+}
+
+:root[data-theme="dark"] .points-awesome {
+  background-color: #064e3b !important;
+}
+
+:root[data-theme="dark"] .points-okay {
+  background-color: #451a03 !important;
+}
+
+:root[data-theme="dark"] .points-one {
+  background-color: #0f172a !important;
+}
+
+:root[data-theme="dark"] .points-zero {
+  background-color: #1e293b !important;
 }
 
 :root[data-theme="dark"] .text-slate-950,
@@ -41,6 +78,14 @@
 
 :root[data-theme="dark"] .text-blue-700 {
   color: #93c5fd !important;
+}
+
+:root[data-theme="dark"] .text-emerald-700 {
+  color: #6ee7b7 !important;
+}
+
+:root[data-theme="dark"] .text-amber-700 {
+  color: #fcd34d !important;
 }
 
 :root[data-theme="dark"] .border-slate-100,
