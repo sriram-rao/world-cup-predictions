@@ -14,7 +14,12 @@ class HomeController < ApplicationController
         next_fixture&.match_date&.in_time_zone(PACIFIC_TIME_ZONE)&.to_date || today
       end
 
-      refresh_results_if_needed(@fixture_date) if @fixture_date == today
+      Rails.logger.info("Football-data auto import check: today=#{today} fixture_date=#{@fixture_date} params_date=#{params[:date].presence || "none"}")
+      if @fixture_date == today
+        refresh_results_if_needed(@fixture_date)
+      else
+        Rails.logger.info("Football-data auto import skipped for #{@fixture_date}: not today (today=#{today})")
+      end
 
       @previous_date = @fixture_date - 1.day
       @next_date = @fixture_date + 1.day
