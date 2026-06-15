@@ -14,6 +14,8 @@ class HomeController < ApplicationController
         next_fixture&.match_date&.in_time_zone(PACIFIC_TIME_ZONE)&.to_date || today
       end
 
+      refresh_results_if_needed(@fixture_date) if @fixture_date == today
+
       @previous_date = @fixture_date - 1.day
       @next_date = @fixture_date + 1.day
       @fixtures = Fixture.where(match_date: @fixture_date.all_day).order(:match_date)
@@ -26,4 +28,18 @@ class HomeController < ApplicationController
       redirect_to root_path
     end
   end
+
+  private
+    def refresh_results_if_needed(date)
+      return unless ENV["API_KEY"].present? || ENV["FOOTBALL_DATA_API_TOKEN"].present?
+
+      cache_key = "football_data_results/#{date.iso8601}"
+      return if Rails.cache.read(cache_key)
+
+      FootballDataResultImporter.new.import_day(date)
+      Rails.cache.write(cache_key, true, expires_in: 1.hour)
+    rescue => error
+      Rails.logger.warn("Football-data result import failed: #{error.class}: #{error.message}")
+      Rails.cache.write(cache_key, true, expires_in: 15.minutes)
+    end
 end

@@ -1,7 +1,8 @@
 <main class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
+  <% result_text = @fixture.result? ? "#{@fixture.home_score}–#{@fixture.away_score}" : "v" %>
   <% title = capture do %>
     <%= team_name_with_flag(@fixture.home_team) %>
-    <span class="text-slate-400"><%= @fixture.result? ? "#{@fixture.home_score}–#{@fixture.away_score}" : "v" %></span>
+    <span class="text-slate-400"><%= result_text %></span>
     <%= team_name_with_flag(@fixture.away_team) %>
   <% end %>
 
@@ -19,7 +20,7 @@
 
   <% actions = link_to "← Back", root_path(date: @back_date), class: "shrink-0 text-sm font-bold text-slate-600 transition hover:text-slate-950" %>
 
-  <%= render "shared/page_header", title: title, description: description, title_class: "text-2xl font-black leading-tight text-slate-950 sm:text-4xl lg:text-5xl", actions: actions %>
+  <%= render "shared/page_header", title: title, description: description, title_class: "text-xl font-black leading-tight text-slate-950 sm:text-2xl lg:text-3xl", actions: actions %>
 
   <% if flash[:notice].present? %>
     <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"><%= flash[:notice] %></div>
@@ -39,13 +40,41 @@
     <% if @predictions.any? %>
       <ol>
         <% @predictions.each do |prediction| %>
-          <li class="grid grid-cols-[minmax(0,1fr)_5rem_5rem] items-center gap-3 border-b border-slate-100 px-4 py-3 last:border-b-0 sm:px-6 <%= "bg-blue-50" if prediction == @user_prediction %>">
+          <% points = @fixture.result? ? prediction.points(@rule) : nil %>
+          <% row_class = if points.nil?
+            ""
+          elsif points >= @max_points
+            "bg-emerald-50"
+          elsif points >= 3
+            "bg-blue-50"
+          elsif points > 1
+            "bg-amber-50"
+          elsif points == 1
+            "bg-white"
+          else
+            "bg-slate-50"
+          end %>
+          <% row_class = "#{row_class} border-l-4 border-l-blue-500" if prediction == @user_prediction %>
+          <% points_class = if points.nil?
+            "text-slate-950"
+          elsif points >= @max_points
+            "text-emerald-700"
+          elsif points >= 3
+            "text-blue-700"
+          elsif points > 1
+            "text-amber-700"
+          elsif points == 1
+            "text-slate-950"
+          else
+            "text-slate-500"
+          end %>
+          <li class="grid grid-cols-[minmax(0,1fr)_5rem_5rem] items-center gap-3 border-b border-slate-100 px-4 py-3 last:border-b-0 sm:px-6 <%= row_class %>">
             <span class="min-w-0 truncate text-sm font-black text-slate-950">
               <%= prediction.user.username %>
               <% if prediction == @user_prediction %><span class="ml-1 text-xs font-bold text-blue-600">(you)</span><% end %>
             </span>
             <span class="text-center text-sm font-black text-slate-700"><%= prediction.home_score %>–<%= prediction.away_score %></span>
-            <span class="text-right text-sm font-black text-slate-950"><%= @fixture.result? ? prediction.points(@rule) : "—" %></span>
+            <span class="text-right text-sm font-black <%= points_class %>"><%= points.nil? ? "—" : points %></span>
           </li>
         <% end %>
       </ol>

@@ -4,6 +4,7 @@ class FixturesController < ApplicationController
   def show
     @fixture = Fixture.find(params[:id])
     @rule = Leaderboard.standard
+    @max_points = @rule.outcome_points + @rule.goal_difference_points + @rule.exact_score_points
     @predictions = @fixture.predictions
       .includes(:user)
       .sort_by { |p| [-p.points(@rule), p.user.username] }
