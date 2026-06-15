@@ -19,6 +19,13 @@
   background-color: #f8fafc;
 }
 
+.penalty-loser {
+  color: rgba(15, 23, 42, 0.4) !important;
+  text-decoration-line: line-through;
+  text-decoration-color: #0f172a;
+  text-decoration-thickness: 2px;
+}
+
 :root[data-theme="dark"] {
   color-scheme: dark;
 }
@@ -47,6 +54,7 @@
   background-color: #172554 !important;
 }
 
+:root[data-theme="dark"] .bg-emerald-50,
 :root[data-theme="dark"] .points-awesome {
   background-color: #064e3b !important;
 }
@@ -61,6 +69,11 @@
 
 :root[data-theme="dark"] .points-zero {
   background-color: #1e293b !important;
+}
+
+:root[data-theme="dark"] .penalty-loser {
+  color: rgba(226, 232, 240, 0.4) !important;
+  text-decoration-color: #e2e8f0;
 }
 
 :root[data-theme="dark"] .text-slate-950,
@@ -92,6 +105,10 @@
 :root[data-theme="dark"] .border-slate-200,
 :root[data-theme="dark"] .border-slate-300 {
   border-color: #334155 !important;
+}
+
+:root[data-theme="dark"] .border-emerald-200 {
+  border-color: #047857 !important;
 }
 
 :root[data-theme="dark"] input:not([type="submit"]),

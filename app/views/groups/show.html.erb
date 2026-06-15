@@ -53,7 +53,7 @@
             <div class="flex min-w-0 items-center gap-3">
               <div class="min-w-0 flex-1 text-sm font-black text-slate-950 sm:text-base">
                 <span><%= team_name_with_flag(fixture.home_team) %></span>
-                <span class="mx-2 text-slate-400"><%= fixture.result? ? "#{fixture.home_score}–#{fixture.away_score}" : "v" %></span>
+                <span class="mx-2 text-slate-400"><%= fixture.result_label %></span>
                 <span><%= team_name_with_flag(fixture.away_team) %></span>
               </div>
               <%= link_to "Predictions", fixture_path(fixture), class: "shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm font-bold text-blue-700 transition hover:bg-slate-50 hover:text-blue-800" %>

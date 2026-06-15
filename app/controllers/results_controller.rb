@@ -16,8 +16,8 @@ class ResultsController < ApplicationController
   def import
     date = Date.iso8601(params.fetch(:date))
     result = FootballDataResultImporter.new.import_day(date)
-    Rails.cache.write("football_data_results/#{date.iso8601}", true, expires_in: 1.minute)
-    Rails.logger.info("Football-data manual import cached for #{date}: expires_in=1.minute")
+    Rails.cache.write("football_data_results/#{date.iso8601}", true, expires_in: 30.minutes)
+    Rails.logger.info("Football-data manual import cached for #{date}: expires_in=30.minutes")
 
     message = "Updated #{result.updated.count}. Skipped #{result.skipped.count}. Unmatched #{result.unmatched.count}."
     message += " #{result.updated.join("; ")}" if result.updated.any?
@@ -35,7 +35,7 @@ class ResultsController < ApplicationController
     end
 
     def result_params
-      params.require(:fixture).permit(:home_score, :away_score)
+      params.require(:fixture).permit(:home_score, :away_score, :regular_home_score, :regular_away_score, :penalty_home_score, :penalty_away_score, :duration)
     end
 
     def fixture_day_path(fixture)

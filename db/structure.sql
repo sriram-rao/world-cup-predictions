@@ -83,8 +83,17 @@ CREATE TABLE public.fixtures (
     group_name text,
     home_score integer,
     away_score integer,
+    regular_home_score integer,
+    regular_away_score integer,
+    penalty_home_score integer,
+    penalty_away_score integer,
+    duration character varying,
     CONSTRAINT fixtures_away_score_non_negative CHECK ((away_score >= 0)),
-    CONSTRAINT fixtures_home_score_non_negative CHECK ((home_score >= 0))
+    CONSTRAINT fixtures_home_score_non_negative CHECK ((home_score >= 0)),
+    CONSTRAINT fixtures_penalty_away_score_non_negative CHECK ((penalty_away_score >= 0)),
+    CONSTRAINT fixtures_penalty_home_score_non_negative CHECK ((penalty_home_score >= 0)),
+    CONSTRAINT fixtures_regular_away_score_non_negative CHECK ((regular_away_score >= 0)),
+    CONSTRAINT fixtures_regular_home_score_non_negative CHECK ((regular_home_score >= 0))
 );
 
 
@@ -126,8 +135,10 @@ CREATE TABLE public.predictions (
     fixture_id uuid NOT NULL,
     home_score integer NOT NULL,
     away_score integer NOT NULL,
+    penalty_winner character varying,
     CONSTRAINT predictions_away_score_non_negative CHECK ((away_score >= 0)),
-    CONSTRAINT predictions_home_score_non_negative CHECK ((home_score >= 0))
+    CONSTRAINT predictions_home_score_non_negative CHECK ((home_score >= 0)),
+    CONSTRAINT predictions_penalty_winner_valid CHECK (((penalty_winner)::text = ANY ((ARRAY['home'::character varying, 'away'::character varying])::text[])))
 );
 
 
@@ -368,6 +379,7 @@ ALTER TABLE ONLY public.predictions
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260604000700'),
 ('20260604000600'),
 ('20260604000500'),
 ('20260604000400'),

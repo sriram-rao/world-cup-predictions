@@ -52,8 +52,8 @@ class Leaderboard < ApplicationRecord
 
   def outcome_correct?(prediction)
     case outcome_rule
-    when "exact_outcome" then prediction.correct_outcome?
-    when "exact_outcome_or_score_within_one_goal" then prediction.correct_outcome? || prediction.score_within_one_goal?
+    when "exact_outcome" then prediction.correct_result?
+    when "exact_outcome_or_score_within_one_goal" then prediction.correct_result? || prediction.score_within_one_goal?
     end
   end
 
@@ -72,10 +72,6 @@ class Leaderboard < ApplicationRecord
   end
 
   def points_for(prediction)
-    points = 0
-    points += outcome_points if outcome_correct?(prediction)
-    points += goal_difference_points if goal_difference_correct?(prediction)
-    points += exact_score_points if exact_score_correct?(prediction)
-    points
+    prediction.point_breakdown(self).sum { |part| part[:points] }
   end
 end

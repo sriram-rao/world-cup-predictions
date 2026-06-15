@@ -54,4 +54,32 @@
       </dl>
     <% end %>
   </section>
+
+  <section class="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 sm:p-8">
+    <h2 class="text-2xl font-black text-slate-950">Knockout extras</h2>
+    <div class="mt-4 space-y-4 text-sm font-semibold text-slate-600">
+      <div class="grid gap-1 border-b border-slate-100 pb-4 sm:grid-cols-[minmax(0,1fr)_5rem]">
+        <h3 class="font-black text-slate-700">90' draw</h3>
+        <p class="sm:col-start-1">Pick a draw, match is drawn after regulation time, then someone wins after extra time.</p>
+        <p class="text-right text-2xl font-black text-slate-950 sm:col-start-2 sm:row-start-1">+<%= Prediction::NINETY_MINUTE_DRAW_POINTS %></p>
+      </div>
+
+      <div class="grid gap-1 border-b border-slate-100 pb-4 sm:grid-cols-[minmax(0,1fr)_5rem]">
+        <h3 class="font-black text-slate-700">90' score</h3>
+        <p class="sm:col-start-1">Same as above, plus exact 90' score.</p>
+        <p class="text-right text-2xl font-black text-slate-950 sm:col-start-2 sm:row-start-1">+<%= Prediction::NINETY_MINUTE_SCORE_POINTS %></p>
+      </div>
+
+      <div class="grid gap-1 border-b border-slate-100 pb-4 sm:grid-cols-[minmax(0,1fr)_5rem]">
+        <h3 class="font-black text-slate-700">Penalty shootout</h3>
+        <p class="sm:col-start-1">Pick a draw, choose correct penalty shootout winner.</p>
+        <p class="text-right text-2xl font-black text-slate-950 sm:col-start-2 sm:row-start-1">+<%= Prediction::PENALTY_WINNER_POINTS %></p>
+      </div>
+
+      <div class="text-slate-500">
+        <p>Normal result, GD, and score points use final/after-extra-time score.</p>
+        <p class="mt-1">If you pick a team to win and they advance on penalties, you get result points, but no penalty shootout bonus.</p>
+      </div>
+    </div>
+  </section>
 </main>

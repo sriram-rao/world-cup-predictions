@@ -37,7 +37,7 @@ class PredictionsController < ApplicationController
     end
 
     def prediction_params
-      params.require(:prediction).permit(:home_score, :away_score)
+      params.require(:prediction).permit(:home_score, :away_score, :penalty_winner)
     end
 
     def fixture_day_path(fixture)

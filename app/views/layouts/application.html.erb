@@ -78,6 +78,18 @@
           status.className = `mt-2 text-center text-xs font-bold ${classes}`;
         };
 
+        const updatePenaltyWinner = (form) => {
+          const container = form.querySelector("[data-penalty-winner]");
+          if (!container) return;
+
+          const home = form.querySelector("[data-score-side='home']")?.value;
+          const away = form.querySelector("[data-score-side='away']")?.value;
+          const show = home !== "" && away !== "" && Number(home) === Number(away);
+          container.classList.toggle("hidden", !show);
+        };
+
+        document.querySelectorAll("form[data-autosave-prediction]").forEach(updatePenaltyWinner);
+
         const save = async (form) => {
           if (!form.checkValidity()) {
             setStatus(form, "Auto-saves");
@@ -112,12 +124,18 @@
 
         document.addEventListener("input", (event) => {
           const form = event.target.closest?.("form[data-autosave-prediction]");
-          if (form) schedule(form, 600);
+          if (form) {
+            updatePenaltyWinner(form);
+            schedule(form, 600);
+          }
         });
 
         document.addEventListener("change", (event) => {
           const form = event.target.closest?.("form[data-autosave-prediction]");
-          if (form) schedule(form, 0);
+          if (form) {
+            updatePenaltyWinner(form);
+            schedule(form, 0);
+          }
         });
       })();
 

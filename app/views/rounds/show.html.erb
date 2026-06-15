@@ -15,7 +15,7 @@
                 <time class="text-sm font-extrabold text-amber-600" datetime="<%= fixture.match_date.iso8601 %>" data-local-time="short"><%= fixture.match_date.in_time_zone("Pacific Time (US & Canada)").strftime("%-m/%-d %-I:%M %p PT") %></time>
                 <div class="min-w-0 text-sm font-black text-slate-950 sm:text-base">
                   <span><%= team_name_with_flag(fixture.home_team) %></span>
-                  <span class="mx-2 text-slate-400"><%= fixture.result? ? "#{fixture.home_score}–#{fixture.away_score}" : "v" %></span>
+                  <span class="mx-2 text-slate-400"><%= fixture.result_label %></span>
                   <span><%= team_name_with_flag(fixture.away_team) %></span>
                 </div>
                 <p class="min-w-0 truncate text-sm text-slate-500 sm:text-right"><%= venue(fixture.location) %></p>

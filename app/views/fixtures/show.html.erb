@@ -1,5 +1,5 @@
 <main class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-  <% result_text = @fixture.result? ? "#{@fixture.home_score}–#{@fixture.away_score}" : "v" %>
+  <% result_text = @fixture.result_label %>
   <% title = capture do %>
     <%= team_name_with_flag(@fixture.home_team) %>
     <span class="text-slate-400"><%= result_text %></span>
@@ -16,6 +16,17 @@
         <%= link_to fixture_stage(@fixture), fixture_stage_path(@fixture), class: "shrink-0 font-bold text-blue-700 transition hover:text-blue-800" %>
       <% end %>
     </span>
+    <% if @fixture.result_details.any? || @fixture.penalties? %>
+      <span class="mt-2 flex flex-wrap gap-2 text-xs font-black text-slate-500">
+        <% @fixture.result_details.each do |detail| %>
+          <span class="rounded-xl border border-slate-200 bg-white px-3 py-1"><%= detail %></span>
+        <% end %>
+        <% if @fixture.penalties? %>
+          <% winner = @fixture.penalty_winner == "home" ? @fixture.home_team : @fixture.away_team %>
+          <span class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700"><%= winner %> wins pens</span>
+        <% end %>
+      </span>
+    <% end %>
   <% end %>
 
   <% actions = link_to "← Back", root_path(date: @back_date), class: "shrink-0 text-sm font-bold text-slate-600 transition hover:text-slate-950" %>
