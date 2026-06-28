@@ -59,6 +59,7 @@
   background-color: #064e3b !important;
 }
 
+:root[data-theme="dark"] .bg-amber-50,
 :root[data-theme="dark"] .points-okay {
   background-color: #451a03 !important;
 }
@@ -109,6 +110,10 @@
 
 :root[data-theme="dark"] .border-emerald-200 {
   border-color: #047857 !important;
+}
+
+:root[data-theme="dark"] .border-amber-200 {
+  border-color: #b45309 !important;
 }
 
 :root[data-theme="dark"] input:not([type="submit"]),

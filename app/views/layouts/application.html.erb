@@ -31,9 +31,27 @@
   </head>
 
   <body class="bg-slate-50 text-slate-900 antialiased">
+    <div data-knockout-rules-notice class="hidden border-b border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-600">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-3">
+        <%= link_to "New knockout scoring rules are live", scoring_rules_path, class: "text-blue-700 underline" %>
+        <button type="button" data-dismiss-knockout-rules-notice class="shrink-0 text-lg font-black leading-none text-slate-400">×</button>
+      </div>
+    </div>
+
     <%= yield %>
 
     <script>
+      (() => {
+        const notice = document.querySelector("[data-knockout-rules-notice]");
+        const dismiss = document.querySelector("[data-dismiss-knockout-rules-notice]");
+        const key = "knockoutRulesNoticeDismissed";
+        if (notice && localStorage.getItem(key) !== "true") notice.classList.remove("hidden");
+        dismiss?.addEventListener("click", () => {
+          localStorage.setItem(key, "true");
+          notice?.classList.add("hidden");
+        });
+      })();
+
       (() => {
         const sync = () => {
           const dark = document.documentElement.dataset.theme !== "light";
