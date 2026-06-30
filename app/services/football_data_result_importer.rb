@@ -29,14 +29,12 @@ class FootballDataResultImporter
       next skipped << skip(match, "not finished") unless match.fetch("status") == "FINISHED"
 
       score = match.fetch("score")
-      full_time = score["fullTime"] || {}
-      home_score = full_time["home"]
-      away_score = full_time["away"]
+      duration = score["duration"] || "REGULAR"
+      home_score, away_score = final_score(score, duration)
       next skipped << skip(match, "missing score") if home_score.nil? || away_score.nil?
 
-      duration = score["duration"] || "REGULAR"
-      regular_time = score["regularTime"] || {}
-      penalties = score["penalties"] || {}
+      regular_home_score, regular_away_score = duration == "REGULAR" ? [nil, nil] : score_pair(score["regularTime"])
+      penalty_home_score, penalty_away_score = duration == "PENALTY_SHOOTOUT" ? penalty_score(score, [home_score, away_score]) : [nil, nil]
 
       fixture = find_fixture(fixtures, match)
       unless fixture
@@ -47,13 +45,13 @@ class FootballDataResultImporter
       fixture.update!(
         home_score: home_score,
         away_score: away_score,
-        regular_home_score: duration == "REGULAR" ? nil : regular_time["home"],
-        regular_away_score: duration == "REGULAR" ? nil : regular_time["away"],
-        penalty_home_score: duration == "PENALTY_SHOOTOUT" ? penalties["home"] : nil,
-        penalty_away_score: duration == "PENALTY_SHOOTOUT" ? penalties["away"] : nil,
+        regular_home_score: regular_home_score,
+        regular_away_score: regular_away_score,
+        penalty_home_score: penalty_home_score,
+        penalty_away_score: penalty_away_score,
         duration: duration
       )
-      Rails.logger.info("Football-data updated fixture_id=#{fixture.id} duration=#{duration} #{fixture.home_team} #{home_score}-#{away_score} #{fixture.away_team}")
+      Rails.logger.info("Football-data updated fixture_id=#{fixture.id} duration=#{duration} #{fixture.home_team} #{home_score}-#{away_score} #{fixture.away_team} regular=#{regular_home_score.inspect}-#{regular_away_score.inspect} penalties=#{penalty_home_score.inspect}-#{penalty_away_score.inspect}")
       updated << "#{fixture.home_team} #{home_score}-#{away_score} #{fixture.away_team}"
     end
 
@@ -62,6 +60,41 @@ class FootballDataResultImporter
 
   private
     attr_reader :token, :pacific_time
+
+    def final_score(score, duration)
+      full_time = score_pair(score["fullTime"])
+      return full_time if duration == "REGULAR"
+
+      regular_time = score_pair(score["regularTime"])
+      extra_time = score_pair(score["extraTime"])
+      return [regular_time[0] + extra_time[0], regular_time[1] + extra_time[1]] if regular_time && extra_time
+
+      penalties = score_pair(score["penalties"])
+      if duration == "PENALTY_SHOOTOUT" && full_time && penalties && full_time[0] >= penalties[0] && full_time[1] >= penalties[1]
+        return [full_time[0] - penalties[0], full_time[1] - penalties[1]]
+      end
+
+      full_time
+    end
+
+    def penalty_score(score, final_score)
+      full_time = score_pair(score["fullTime"])
+      if full_time && final_score && full_time[0] >= final_score[0] && full_time[1] >= final_score[1]
+        return [full_time[0] - final_score[0], full_time[1] - final_score[1]]
+      end
+
+      score_pair(score["penalties"])
+    end
+
+    def score_pair(node)
+      return unless node
+
+      home = node["home"]
+      away = node["away"]
+      return if home.nil? || away.nil?
+
+      [home, away]
+    end
 
     def fetch_matches(date)
       # Football-data filters by UTC date. Fetch adjacent UTC day too, then filter by PT app date.

@@ -84,7 +84,13 @@
               <%= prediction.user.username %>
               <% if prediction == @user_prediction %><span class="ml-1 text-xs font-bold text-blue-600">(you)</span><% end %>
             </span>
-            <span class="text-center text-sm font-black text-slate-700"><%= prediction.home_score %>–<%= prediction.away_score %></span>
+            <span class="text-center text-sm font-black text-slate-700">
+              <%= prediction.home_score %>–<%= prediction.away_score %>
+              <% if prediction.draw? && prediction.penalty_winner.present? %>
+                <% winner = prediction.penalty_winner == "home" ? @fixture.home_team : @fixture.away_team %>
+                <span class="mt-0.5 block text-xs font-bold text-slate-500">Penalties: <%= winner %></span>
+              <% end %>
+            </span>
             <span class="text-right text-sm font-black <%= points_class %>"><%= points.nil? ? "—" : points %></span>
           </li>
         <% end %>
