@@ -97,10 +97,16 @@
         <% end %>
       <% elsif prediction.persisted? %>
         <div class="mt-1 flex items-center justify-between gap-4">
-          <div class="flex items-center gap-2 text-sm font-bold text-slate-600">
-            <span class="text-sm font-black text-slate-950"><%= prediction.home_score %></span>
-            <span class="font-black text-slate-400">–</span>
-            <span class="text-sm font-black text-slate-950"><%= prediction.away_score %></span>
+          <div class="text-sm font-bold text-slate-600">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-black text-slate-950"><%= prediction.home_score %></span>
+              <span class="font-black text-slate-400">–</span>
+              <span class="text-sm font-black text-slate-950"><%= prediction.away_score %></span>
+            </div>
+            <% if prediction.draw? && prediction.penalty_winner.present? %>
+              <% winner = prediction.penalty_winner == "home" ? fixture.home_team : fixture.away_team %>
+              <p class="mt-0.5 text-xs font-bold text-slate-500">Penalties: <%= winner %></p>
+            <% end %>
           </div>
 
           <% if fixture.result? %>

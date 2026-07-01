@@ -29,11 +29,11 @@ class FootballDataResultImporter
       next skipped << skip(match, "not finished") unless match.fetch("status") == "FINISHED"
 
       score = match.fetch("score")
-      duration = score["duration"] || "REGULAR"
+      duration = inferred_duration(score)
       home_score, away_score = final_score(score, duration)
       next skipped << skip(match, "missing score") if home_score.nil? || away_score.nil?
 
-      regular_home_score, regular_away_score = duration == "REGULAR" ? [nil, nil] : score_pair(score["regularTime"])
+      regular_home_score, regular_away_score = duration == "REGULAR" ? [nil, nil] : regular_score(score, [home_score, away_score])
       penalty_home_score, penalty_away_score = duration == "PENALTY_SHOOTOUT" ? penalty_score(score, [home_score, away_score]) : [nil, nil]
 
       fixture = find_fixture(fixtures, match)
@@ -61,20 +61,39 @@ class FootballDataResultImporter
   private
     attr_reader :token, :pacific_time
 
+    def inferred_duration(score)
+      penalties = score_pair(score["penalties"])
+      extra_time = score_pair(score["extraTime"])
+      duration = score["duration"]
+
+      return "PENALTY_SHOOTOUT" if duration == "PENALTY_SHOOTOUT" || penalties
+      return "EXTRA_TIME" if duration == "EXTRA_TIME" || extra_time
+
+      "REGULAR"
+    end
+
     def final_score(score, duration)
       full_time = score_pair(score["fullTime"])
-      return full_time if duration == "REGULAR"
+      return full_time if duration == "REGULAR" || duration == "EXTRA_TIME"
 
       regular_time = score_pair(score["regularTime"])
       extra_time = score_pair(score["extraTime"])
       return [regular_time[0] + extra_time[0], regular_time[1] + extra_time[1]] if regular_time && extra_time
 
       penalties = score_pair(score["penalties"])
-      if duration == "PENALTY_SHOOTOUT" && full_time && penalties && full_time[0] >= penalties[0] && full_time[1] >= penalties[1]
+      if full_time && penalties && full_time[0] >= penalties[0] && full_time[1] >= penalties[1]
         return [full_time[0] - penalties[0], full_time[1] - penalties[1]]
       end
 
       full_time
+    end
+
+    def regular_score(score, final_score)
+      regular_time = score_pair(score["regularTime"])
+      return regular_time if regular_time
+
+      extra_time = score_pair(score["extraTime"])
+      return [final_score[0] - extra_time[0], final_score[1] - extra_time[1]] if final_score && extra_time
     end
 
     def penalty_score(score, final_score)

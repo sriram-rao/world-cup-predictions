@@ -41,7 +41,7 @@
     <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700"><%= flash[:alert] %></div>
   <% end %>
 
-  <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70">
+  <section class="overflow-visible rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70">
     <div class="grid grid-cols-[minmax(0,1fr)_5rem_5rem] gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 text-xs font-black uppercase tracking-wide text-slate-500 sm:px-6">
       <span>Player</span>
       <span class="text-center">Pick</span>
@@ -91,7 +91,21 @@
                 <span class="mt-0.5 block text-xs font-bold text-slate-500">Penalties: <%= winner %></span>
               <% end %>
             </span>
-            <span class="text-right text-sm font-black <%= points_class %>"><%= points.nil? ? "—" : points %></span>
+            <span class="relative text-right text-sm font-black <%= points_class %>">
+              <% if points.nil? %>
+                —
+              <% else %>
+                <% breakdown = prediction.point_breakdown(@rule) %>
+                <details class="group relative inline-block" data-click-outside-close>
+                  <summary class="cursor-pointer list-none marker:hidden"><%= points %> <span class="text-slate-400 group-open:hidden">▾</span><span class="hidden text-slate-400 group-open:inline">▴</span></summary>
+                  <div class="absolute right-0 top-full z-10 mt-2 hidden w-48 rounded-xl border border-slate-200 bg-white px-3 py-2 text-left text-sm font-semibold text-slate-500 shadow-xl group-hover:block group-open:block">
+                    <% breakdown.each_with_index do |part, index| %>
+                      <p><%= "+ " unless index.zero? %><%= part[:points] %> (<%= part[:label] %>)</p>
+                    <% end %>
+                  </div>
+                </details>
+              <% end %>
+            </span>
           </li>
         <% end %>
       </ol>
