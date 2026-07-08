@@ -157,11 +157,15 @@
         });
       })();
 
-      document.addEventListener("click", (event) => {
+      const closeOpenDetails = (event) => {
         document.querySelectorAll("details[data-click-outside-close][open]").forEach((details) => {
           if (!details.contains(event.target)) details.removeAttribute("open");
         });
+      };
 
+      document.addEventListener("pointerdown", closeOpenDetails);
+      document.addEventListener("click", (event) => {
+        closeOpenDetails(event);
         if (event.target instanceof HTMLDialogElement) event.target.close();
       });
     </script>
